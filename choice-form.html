@@ -1,0 +1,208 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="bower_components/paper-item/paper-item.html">
+
+<!--
+This component is a form that fires an event with request object on click of Add Room button. 
+
+This component use the form that contains drop down for all input fields of rooms like adult children and child age .
+
+Example:
+
+    <choice-form>
+    </choice-form>
+
+Note:
+The form handles below mentioned scenarios on its own.
+
+1. A minimum of 1 adult is required to book a hotel.
+2. Children are considered below 12yrs old.
+3. Child age is mandatory.
+
+-->
+
+<dom-module id="choice-form">
+    <template>
+        <style> 
+        :host {
+    display: block;
+  }  
+  #Adult
+  {
+       width:67px;
+       float:left;
+       float:clear;
+  }
+  .childs{
+        width:67px;
+        float:left;
+        margin-left:18px;
+        float:clear;
+   }
+   .childs1{
+        width:67px;
+        float:left;
+        margin-left:18px;
+        float:clear;
+   }
+ 
+  .container{
+      width:445px;
+      margin-left: 5px;      
+  }
+  #size{
+      font-size: 10px;
+  }
+  </style>
+       <div class="container">
+        <form is="iron-form" id="form" method="post" action="/form/handler">
+        <div id="Adult">
+        <paper-dropdown-menu label="Adults" id="adult{{displayId()}}" class="inputAdultCount" required auto-validate error-message="Enter">
+            <paper-listbox class="dropdown-content" selected="{{countAdult}}">
+                <paper-item>1</paper-item>
+                <paper-item>2</paper-item>
+                <paper-item>3</paper-item>
+                <paper-item>4</paper-item>
+                <paper-item>5</paper-item>
+            </paper-listbox>
+        </paper-dropdown-menu>
+        <div id="size">(12+ Year)</div>
+        <input is="iron-input" type="hidden" bind-value="[[countAdult]]">
+        </div>
+
+        <div class="childs">
+        <paper-dropdown-menu  label="children" id="child" on-iron-select='onCount' class="inputChildCount" required auto-validate error-message="Enter Child Count">
+            <paper-listbox  class="dropdown-content" selected="{{countChildren}}">
+                <paper-item>0</paper-item>
+                <paper-item>1</paper-item>
+                <paper-item>2</paper-item>
+                <paper-item>3</paper-item>
+                <paper-item>4</paper-item>
+                <paper-item>5</paper-item>
+            </paper-listbox>
+        </paper-dropdown-menu>
+        <div id="size">(0-11 Year)</div>
+        <input is="iron-input" type="hidden" bind-value="[[countChildren]]">
+        </div>        
+       
+         <template is='dom-repeat' items='{{ children }}'>                    
+           <div class="childs1">        
+                    <paper-dropdown-menu required auto-validate error-message="Enter age" label="child{{childIndex(index)}}" id="child{{childID(index)}}">
+                       <paper-listbox class="dropdown-content">                             
+                            <paper-item>0</paper-item>
+                            <paper-item>1</paper-item>
+                            <paper-item>2</paper-item>
+                            <paper-item>3</paper-item>
+                            <paper-item>4</paper-item>
+                            <paper-item>5</paper-item>
+                            <paper-item>6</paper-item>
+                            <paper-item>7</paper-item>
+                            <paper-item>8</paper-item>
+                            <paper-item>9</paper-item>
+                            <paper-item>10</paper-item>
+                            <paper-item>11</paper-item>                            
+                        </paper-listbox>            
+                    </paper-dropdown-menu>
+                 <div id="size" >Age</div>  
+           </div>
+         </template>
+     </form>      
+</div>
+       
+
+    </template>
+    <script>
+    Polymer({
+        
+        is: 'choice-form',
+        properties:{
+            /*
+            * Fired when the option from form add room is clicked.
+            *
+            * @event 'need more rooms or have children'
+            */  
+
+            /**
+            * This is an array of children.
+            * children can be set by setting an array of objects.
+            * children can be added by clicking on child drop down and it is toggle with number of children added by user. 
+            * child age drop down in display whrn user clicks on number of children user wants.
+            **/
+          children: {
+              type: Array,
+              notify: true
+          },
+
+            /**
+            *this property is set to adult drop down for selected item.
+            **/              
+          countAdult: {
+              type: Number,           
+          },
+           /**
+            *this property is set to child drop down for selected item.
+            **/
+          countChildren: {
+              type: Number,                    
+          },
+           /**
+            * child age drop down for toggle purpose.
+            **/
+          show: {
+              type: Boolean,
+              value: true,
+          },           
+        },
+
+        /**
+       *function to create dynamic Id for child age dropdown.
+       **/
+
+        childID: function(index) {
+        index = index + 1;
+        return this.room+ '_' +index;
+        }, 
+       
+        /**
+       *function to create lable for child age dropdown.
+       **/
+
+        childIndex: function (index){
+            index = index + 1;
+            return index;
+        },
+       
+        /**
+       *function to generate dynamic id for adult dropdown.
+       **/
+
+        displayId : function (a){            
+           console.log(this);
+           return a;
+        },
+       
+        /**
+       *defines the array for children 
+       **/
+
+       ready: function () {
+            this.children = [];                                             
+        },
+      
+       /**
+       *This function is used for child dropdown ,
+        *on click this function adds the child age dropdown to form.
+       **/
+
+       onCount: function () {
+         this.children = [];
+         cCount = this.countChildren;
+         for(var i = 0; i < cCount; i++){
+             this.push('children', { child: "" });            
+          }
+          var age = this.parentElement.parentElement;
+        }  
+    });
+    </script>
+</dom-module>

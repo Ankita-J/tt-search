@@ -1,0 +1,248 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="choice-form.html">
+<!--
+This component is a form that fires an event with request object on click of dropdown option 'need more rooms or have children'. 
+
+This component use the component 'choice form'  containing values of all input fields of drop down for adult children and child age .
+
+Example:
+
+    <choice-card>
+    </choice-card>
+
+Note:
+The form handles below mentioned scenarios on its own.
+
+1. A minimum of 1 adult is required to book a hotel.
+2. Children are considered below 12yrs old.
+3. Child age is mandatory.
+
+-->
+<dom-module id="choice-card">
+    <template>
+        <style> 
+        :host {
+             display: block;
+        }  
+        .buttons{
+             color: #4cb050;
+             float:right;
+             margin-right: 10px;
+             margin-top: 20px;  
+        }
+        #line{
+            width:100%;
+            border-bottom: 1px solid black;
+            height:12px;     
+            margin: 5px 0 10px 0;
+        }
+        #line span{
+            background-color:white;
+            padding:10px;
+            font-size:16px;
+        }
+        .head
+        {
+            float:left;
+            width:490px;
+            margin-top: 20px;
+        }
+      
+      </style>
+
+<paper-material style="background-color: whitesmoke; width: 500px;">
+    <div style="float:left">
+     <form is="iron-form" id="form" method="post" action="/form/handler">
+            <template is='dom-repeat' items='{{ rooms }}'>
+                <div class="head">
+                    <paper-item >          
+                        <div id="line"><span>Room# {{displayIndex(index)}}</span></div>  
+                        <paper-button toggles class=button on-click="deleteRoom"><img src="trash.png" height="20px" width= "20px"></paper-button>                 
+                    </paper-item>
+                </div>
+                <choice-form room="{{displayIndex(index)}}">{{ item.room }}</choice-form>
+            </template>
+     </form>
+    </div>
+    <div class="buttons">
+      <paper-button toggles on-click='addRoom'>Add Room</paper-button>
+      <paper-button toggles on-click='doneRoom'>Done</paper-button>
+    </div>
+</paper-material>
+
+</template>
+<script>
+
+    Polymer({
+        is: 'choice-card',
+        properties: {
+             /**
+        * Fired when the trigger from drop down list 'need more rooms or have children is clicked.
+        *
+        * @event 'need more rooms or have children'
+        */ 
+        
+         /**
+         * This is an array of rooms.
+         * rooms can be set by setting an array of objects.
+         * Rooms can be added by clicking on add room button and can be deleted by clicking on trash icon 
+         * rooms form is displayed when user click on need more rooms or have children.
+         **/
+            rooms: {
+                type: Array,
+                notify: true
+            }, 
+        
+           /**
+           *This property is set for total count of rooms.
+           **/
+        
+          roomCount: {
+                type: Number,
+                value: 0
+            }
+        },
+        
+        /**
+        * Defines the array for rooms 
+        **/
+        
+        ready: function () {
+            this.rooms = [];           
+        },
+        
+        /**
+        *This function is used for Add Room button ,
+        *on click this function adds the room to form.
+        **/
+        addRoom: function () {
+            this.push('rooms', { room: "" });  
+            
+            this.roomCount = this.roomCount + 1;          
+        },
+
+        /**
+        *Function to display index for rooms according to add and delete function.
+        **/
+         
+        displayIndex: function(index) {
+             index = index + 1;           
+             return index;                         
+        },    
+        
+        /**
+        *This function is used for delete Room button (trash icon),
+        *on click this function delete the room to form.
+        **/
+        
+        deleteRoom: function (e) {
+            this.splice('rooms', e.model.index, 1);           
+            this.roomCount = this.roomCount - 1;
+        },      
+        
+        /**
+        *Function works for done button .
+        *on click it count total adults, children nad rooms from the form.
+        *output gives to the dropdown to show it's content instead of 'need rooms or have children'
+        *it also provides the array containing adultCount, childCount and array for children ages for each room.
+        **/
+        
+        doneRoom: function () {
+            var inputAdultCount = document.getElementsByClassName("inputAdultCount");
+            var inputChildCount = document.getElementsByClassName("inputChildCount");
+            var dataAdult = [];
+            var dataChild = [];
+            var dataRoom = [];
+            var totalData = [];
+            var roomData = [];
+            var adultCount = 0;
+            var childCount = 0;
+            var childAge = [];         
+            var roomCount = this.roomCount;
+
+            var idArray = [];
+            var roomIdArray = [];
+            var roomChildIdArray = [];
+                /*
+                To collect the id's of adult child and childage dropdown as dynamic
+                */            
+             for(var i = 0; i < roomCount; i++){
+                    var countId = +2 + +inputChildCount
+                    roomIdArray[0] = document.getElementById('adult').id = 'adult' + i;
+                    roomIdArray[1] = document.getElementById('child').id = 'child' + i;
+                    roomChildIdArray = [];
+                    for(var j = 0; j < inputChildCount[i].value; j++){
+                        roomChildIdArray[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).id;
+                    }
+                    roomIdArray[2] = roomChildIdArray;
+                    // document.getElementById('adult').id = 'adult'+i;
+                    // document.getElementById('child').id = 'child'+i;
+                 idArray[i] = JSON.stringify(roomIdArray);
+              }
+              console.log(idArray);
+
+            for (var i = 0; i < roomCount; i++)
+            { 
+            // loop through each adult input on the page
+            
+                dataAdult[i] = inputAdultCount[i].value;
+                if (dataAdult[i] === "1") {
+                  //  alert('hi');
+                 document.getElementsByClassName("inputAdultCount").invalid = true;
+                 }
+                adultCount = +adultCount + +dataAdult[i];
+            }
+            var inputAdult = JSON.stringify(adultCount);
+            
+            for (var i = 0; i < roomCount; i++)
+            { 
+            // loop through each child input on the page
+                dataChild[i] = inputChildCount[i].value;
+                childCount = +childCount + +dataChild[i];
+            }
+            var inputChild = JSON.stringify(childCount);
+
+            for (var i = 0; i < roomCount; i++)
+            {
+            // loop through each child input on the page  
+                     count = +2 + +inputChildCount[i].value;                                  
+                     dataRoom[0] = inputAdultCount[i].value;
+                     dataRoom[1] = inputChildCount[i].value;
+                     childAge = [];
+                    
+                     for(var j = 0; j < inputChildCount[i].value; j++){                        
+                        childAge[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).selectedItem.textContent.trim();
+                     }                     
+                     dataRoom[2] = childAge;             
+                 
+                 totalData[i] = JSON.stringify(dataRoom);
+            }
+            alert(totalData);
+            console.log(totalData);                       
+             if(roomCount === 1)
+             {
+                 var output = inputAdult  + '  Adults' + ' ,  ' +  inputChild + '  Children  in ' + roomCount + ' room';
+             }
+             else{
+                 var output = inputAdult  + '  Adults' + ' ,  ' +  inputChild + '  Children  in ' + roomCount + ' rooms';           
+             } 
+             /*
+             to change the textcontent of dropodown list from 'need more rooms or have children to 'x adult, y children in z rooms'.          
+             */
+            var need = this.parentElement.parentElement;            
+            console.log(need);
+            var room = need.parentNode.parentNode.querySelector("#needRoom");
+            room.textContent = output;
+            need.parentNode.parentNode.querySelector("#listbox").selected = 1;
+            need.parentNode.parentNode.querySelector("#listbox").selected = 5;
+              /*
+              to toggle the paper-card used for 'need more room or have children form
+              */          
+                if (need.style.visibility == 'visible' || need.style.visibility == '')
+                {
+                    need.style.visibility = 'hidden';                    
+                }
+            }
+    });
+</script>
+</dom-module>

@@ -1,0 +1,497 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-item/paper-item.html">
+<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="bower_components\paper-input-date-picker-master\paper-input-date-picker.html">
+<link rel="stylesheet" href="bower_components\bootstrap\dist\css\bootstrap.min.css">
+<script src="bower_components\jquery\dist\jquery.min.js"></script>
+<script src="bower_components\bootstrap\dist\js\bootstrap.min.js"></script>
+
+<link rel="import" href="choice-card.html">
+
+
+<!--
+This component is a form that fires an event with search request object on successfull submission. 
+
+There are two  properties that are required to run this form which initialize the location autosuggest. These are
+`data-url`, `query-params`.
+
+This component triggers the event `t-search` with an object containing values of all input fields in event details.
+Object created with the `t-search`:
+
+    {
+        location: this.location,
+        checkIn: this.checkIn,
+        checkOut: this.checkOut,
+        adultCount: this.adultCount,
+        childCount: this.childCount,
+        childAges: this.childAges
+    }
+
+To preselect some value in the form pass the value of the property while initiating t-search.
+
+Example:
+
+    <t-search 
+        id="searchView" 
+        data-url="e.g BASEURL/api/content/autosuggest/" 
+        query-params="e.g token=[[authToken]]" 
+        on-t-hotel-search-validate="onSearch">
+    </t-search>
+### Styling
+Custom property              | Description                                | Default
+-----------------------------|--------------------------------------------|-------------
+ `--outer-container-color    |  Background color of outer container       |   #424d51
+  --search-button-color      |  Color for search button                   |   #4cb050
+Note:
+The form handles below mentioned scenarios on its own.
+
+1. You can't search for past dates.
+2. Minimum booking date difference is 1 day ie: user have to book hotel atleast for a day so check out date is always greater than check in.
+3. A minimum of 1 adult is required to book a hotel.
+4. Children are considered below 12yrs old.
+5. Child age is mandatory.
+
+-->
+
+
+<dom-module id="t-search">
+  <template>
+    <style is="custom-style">
+      :host{
+        display : block;
+       padding :0px;
+       margin : 0px;
+      }
+      :root {
+       --vaadin-date-picker-overlay : {
+          max-height: 250px;
+       };
+      }
+      app-toolbar{
+        background-color: var(--outer-container-color);
+        display: block;
+        height: 100px;
+      }  
+      paper-input{
+        --paper-input-container-focus-color: lightgray;
+         --paper-input-container-color: lightgray;
+          --paper-input-container-input-color: white;
+          font-size: small;
+          
+      }   
+      paper-dropdown-menu {
+       --paper-input-container-color:lightgray;
+       --paper-input-container-focus-color:lightgray;
+       --paper-input-container-input-color:lightgray;
+       --paper-menu-button-dropdown: {
+            position: absolute !important;
+            top: 50px !important;
+            right: 6px !important;    
+          };
+     }
+      #deskinput1{
+        width : 100%;      
+      }
+      #listbox{
+        border: 2px solid lightgray;
+      }
+     
+      paper-button{
+        color : white;
+        background-color: var(--search-button-color);
+        width: 80px;
+        height: 40px;
+        margin-top: 18px;
+        margin-left: 10px;        
+        font-size: small;
+      }
+       @media (min-width: 380px) {
+          .row-xs-height {
+            display: table;
+            table-layout: fixed;
+            height: 100%;
+            width: 100%;            
+          }
+          paper-card{
+          position: absolute !important;
+          top: 190px !important;
+          right: 18px !important;
+          width:455px;
+          border:1px solid lightgray;
+          background-color:white;
+          }
+      }
+      @media (min-width: 768px) {
+        .row-sm-height {
+          display: table;
+          table-layout: fixed;
+          height: 200px;
+          width: 100%;
+        }
+        paper-container{
+          position:fixed;
+        }
+        paper-card{
+              position: absolute !important;
+          top: 140px !important;
+          right: 18px !important;
+          width:455px;
+          border:2px solid lightgray;
+          background-color:white;
+          }
+       }
+      @media (min-width: 1024px) {
+      .row-md-height {
+        display: table;
+        table-layout: fixed;
+        height: 100px;
+        width: 100%;
+      }
+      paper-card{
+        position: absolute !important;
+        top: 80px !important;
+        right: 18px !important;
+        width:455px;
+        border:2px solid lightgray;
+        background-color:white;
+        }
+      }
+      @media (min-width: 1200px) {
+      .row-lg-height {
+        display: table;
+        table-layout: fixed;
+        height: 100px;
+        width: 100%;
+      }
+      paper-card{
+        position: absolute !important;
+        top: 80px !important;
+        right: 18px !important;
+        width:455px;
+        border:2px solid lightgray;
+        background-color:white;
+        }
+  }  
+                          /*DATE PICKER */
+
+       .suggestions#end, .suggestions#start {
+          --primary-color: lightgray;
+          --dark-theme-background-color: #fff;
+          --dark-theme-secondary-color: #d0d0d0; 
+          --primary-text-color: #4cb050;
+          --secondary-text-color: lightgray;
+          --light-primary-color: #4cb050;
+          --primary-background-color: white;                         
+      }    
+      
+    </style>
+
+<!-- force-narrow prevents the drawer from ever being displayed in persistent mode -->
+<app-drawer-layout force-narrow>
+
+  <app-header-layout>
+    <app-header><span></span><br>
+
+    </app-header>
+
+   
+ <div class="container-fluid">
+    <div class="row">
+     
+    <app-toolbar class="row-lg-height row-md-height row-sm-height row-xs-height">
+
+      <form is="iron-form" id="form" method="post" action="/form/handler">
+        
+           
+          <div required auto-validate class="col-lg-4 col-md-4 col-sm-12 col-xs-12" id="deskinput" style="height:60px">
+            <template is="dom-bind">
+              <t-mystique-auth name="mystique" url="http://demo.travelnxt.com/api/authentication/authenticate/context" token-response="{{tokenResponse}}"
+                auto>
+              </t-mystique-auth>
+              <t-autosuggest required auto-validate  id="location" name="location"
+                required selected-item="{{location}}" query-params="token={{tokenResponse.authenticationToken}}"  label="Enter city, airport, address or point of interest"
+                token-param="formattedAddress" data-url="http://demo.travelnxt.com/api/content/autosuggest/"></t-autosuggest>
+              
+            </template>
+          </div>
+
+          <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">
+            <paper-input-date-picker class="suggestions" date-format="MM-DD-YYYY" id="start" label="Check In" required min-date="[[today]]" max-date="[[checkmax]]" on-keydown="keypress"
+              required auto-validate error-message="Enter check in"></paper-input-date-picker>
+
+            <!--<vaadin-date-picker class="suggestions" id="start" label="Check In" required min="[[today]]" max="[[checkmax]]" on-keydown="keypress"
+              required auto-validate error-message="Enter check in">
+            </vaadin-date-picker>-->
+          </div>
+
+          <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">
+             <paper-input-date-picker class="suggestions" id="end" label="Check Out" required date-format="MM-DD-YYYY" on-keydown="keypress" max-date="[[checkmax]]" required
+              auto-validate error-message="Enter check out">
+             </paper-input-date-picker>
+            <!--<vaadin-date-picker  class="suggestions" id="end" label="Check Out" required on-keydown="keypress" max="[[checkmax]]" min="[[today]]" required
+              auto-validate error-message="Enter check out">
+            </vaadin-date-picker>-->
+          </div>
+
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+            <paper-dropdown-menu required auto-validate error-message="Required Field"  class="suggestions" label="Travellers"  id="deskinput1">
+              <paper-listbox class="dropdown-content" id="listbox" selected="{{choice}}">
+                <paper-item>1 Adult in 1 Room</paper-item>
+                <paper-item>2 Adults in 1 Room</paper-item>
+                <paper-item>3 Adults in 1 Room</paper-item>
+                <paper-item>4 Adults in 1 Room</paper-item>
+                <paper-item>2 Adults in 2 Rooms</paper-item>
+                <paper-item on-tap="openChildForm" id="needRoom" style="color: #4cb050">Need more rooms or have children ? </paper-item>
+              </paper-listbox>
+            </paper-dropdown-menu>
+            <input is="iron-input" type="hidden" bind-value="[[choice]]">
+          </div>
+         
+          <div class="col-lg-1 col-md-1 col-sm-2 col-xs-12 text-center">
+            <paper-button  toggles on-tap="submitDesktopInput" class="button" id="button">Search</paper-button>
+          </div>
+           
+      </form>
+ 
+    </app-toolbar>
+    
+     </div>
+        </div>
+
+
+ <paper-card hidden$="{{show}}" id="paperCard">
+       <div style="height: 400px; overflow-y: auto; overflow-x: hidden;"> <choice-card></choice-card></div>
+      </paper-card>
+
+
+</app-header-layout>
+
+</app-drawer-layout>
+ 
+</template>
+
+<script>
+  Polymer({
+    is: 't-search',
+    properties: {
+             /**
+        * This contain search form to search a hotel based on location, check-in date, check-out date and travellers.
+        */         
+
+        /*
+        *travellers drop down for toggle purpose.
+        */
+      
+      show: {
+        type: Boolean,
+        value: true
+      },
+
+      /*
+      *return the min date of check in date and checkout date as today
+      */
+
+      today: {
+        value: function () {
+          return new Date();
+        }
+      },
+
+      /*
+      *this property is set to travellers drop down for selected item.
+      */
+
+      choice: {
+        type: String,
+        value: '1 Adult in 1 Room'
+      },
+
+      /*
+      *set to max date of checkin date picker and checkout date picker
+      *returns the max date after 1 year.
+      */
+
+      checkmax: {
+        value: function () {
+          var x = 12; //or whatever offset
+          var CurrentDate = new Date();
+          CurrentDate.setMonth(CurrentDate.getMonth() + x);
+          return CurrentDate;
+        }
+      },      
+    },
+
+    /*
+    *function set to keypress event of date picker.
+    *prevent user to input by typeing.
+    */
+
+    keypress: function (event) {
+        var regex = new RegExp("^[a-zA-Z0-9]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (regex.test(key)) {
+          event.preventDefault();
+          return false;
+        }
+    },
+
+    /*
+    *to open the paper-card on click of 'need more rooms or have children'
+    *paper-card contains choice form.
+    *this is used for toggle purpose.
+    */
+
+    openChildForm: function () {
+       if (this.show = true){
+      this.show = !this.show
+       }      
+        var pCard = document.getElementById("paperCard");
+        pCard.style.visibility = '' ? 'hidden' : '';     
+    },
+
+    /*
+    *To collect the input from form on click of search button.
+    *This function also validates the each field of the form.
+    *used to set search button text as 'searching' after clicking on search button.
+    */
+
+    submitDesktopInput: function () {
+      var input = document.getElementsByClassName("suggestions");
+      var data = [];
+        
+        var button = this.$.button;
+        button.textContent = 'searching';
+
+      for (var i = 0; i < input.length; i++) {
+        data[i] = input[i].value;
+      }
+      if (data[0] == "" && data[1] == null && data[2] == null && data[3]==null) {
+        document.getElementById("main1").invalid = true;
+        this.$.start.invalid = true;
+        this.$.end.invalid = true;
+        this.$.deskinput1.invalid = true;        
+      }
+      else if(data[0]=="" && data[1]==null && data[2]==null){       
+        document.getElementById("main1").invalid = true;
+        this.$.start.invalid = true;
+        this.$.end.invalid = true;
+      }
+       else if(data[0]=="" && data[2]==null && data[3]==null){        
+        document.getElementById("main1").invalid = true;
+        this.$.end.invalid = true;
+        this.$.deskinput1.invalid = true;
+      }      
+      else if(data[1]==null && data[2]==null && data[3]==null){
+        this.$.start.invalid = true;
+        this.$.end.invalid = true;
+        this.$.deskinput1.invalid = true;
+      }
+      else if(data[0]=="" && data[1]==null && data[3]==null){
+        document.getElementById("main1").invalid = true;
+        this.$.start.invalid = true;
+        this.$.deskinput1.invalid = true;
+      }
+       else if(data[0]=="" && data[1]==null){
+          document.getElementById("main1").invalid = true;
+          this.$.start.invalid = true;
+       }
+       else if(data[0]=="" && data[2]==null){
+         document.getElementById("main1").invalid = true;
+         this.$.end.invalid = true;
+       }
+       else if(data[0]=="" && data[3]==null){
+         document.getElementById("main1").invalid = true;
+         this.$.deskinput1.invalid = true;
+       }
+        else if(data[1]==null && data[2]==null){
+           this.$.start.invalid = true;
+           this.$.end.invalid = true;
+        }
+        else if(data[1]==null && data[3]==null){
+          this.$.start.invalid = true;
+          this.$.deskinput1.invalid = true;
+        }
+        else if(data[2]==null && data[3]==null){
+           this.$.end.invalid = true;
+           this.$.deskinput1.invalid = true;
+        }
+        else if (data[0] == "") {//show error        
+          document.getElementById("main1").invalid = true;
+        }
+        else if (data[1] == null) {
+          this.$.start.invalid = true;          
+        }
+        else if (data[2] == null) {
+          this.$.end.invalid = true;
+        }
+        else if (data[3] == null) {
+          this.$.deskinput1.invalid = true;
+        }
+        else {
+          var myJSON = JSON.stringify(data);
+          alert(myJSON);     // will alert the value of the input
+          console.log(myJSON);
+          return false;      // stop form from posting
+        }
+      },
+
+      /* 
+      * function to control date picker for checkin and checkout dates.
+      */
+    ready: function () {
+
+      var start = document.querySelector('#start');
+      var end = document.querySelector('#end');
+      var x = 6;
+      var CurrentDate;
+      start.addEventListener('value-changed', function () {
+        // Open the end date picker with a delay to
+        // make it less confusing.
+        window.setTimeout(function () {
+          end.value = start.value;
+          var checkOutDate = start.value;
+          checkOutDate.setDate(checkOutDate.getDate() + 1);
+          end.minDate = checkOutDate;
+        
+           CurrentDate = start.value;
+          //  CurrentDate.setDate(CurrentDate.getDate() + x);
+           end.initialPosition = CurrentDate;
+          end._showDialog();
+        }, 500);
+      });
+      
+
+       var e = document.createElement('paper-dropdown-menu');
+        var p = Object.getPrototypeOf( e );
+        p._selectedItemChanged = function(selectedItem) {
+          var value = '';
+          var labelValue = '';
+          if (selectedItem) {
+            function t( p ){ if( p || p === '' ) return { v: p }; };
+            value = t( selectedItem.getAttribute('value') ) || t( selectedItem.value ) || t( selectedItem.label) || t( selectedItem.getAttribute('label') ) || t( selectedItem.textContent.trim() );
+            value = value.v || "";
+            labelValue = t( selectedItem.label ) || t( selectedItem.getAttribute('label') ) || t( selectedItem.textContent.trim() );
+            labelValue = labelValue.v;
+          }
+          this._setValue(value);
+          this._setSelectedItemLabel(labelValue);
+          if( this.autoValidate || 'string' === typeof this.getAttribute('auto-validate') )  {
+            var valid;
+            if (this.validate) {
+              valid = this.validate();
+            } else {
+              valid = this.checkValidity();
+            }
+            this.invalid = !valid;
+          }
+          this.fire('change');
+        };
+      },     
+    
+    });
+    
+</script>
+</dom-module>
