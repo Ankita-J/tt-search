@@ -221,19 +221,12 @@ The form handles below mentioned scenarios on its own.
           <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">
             <paper-input-date-picker class="suggestions" date-format="MM-DD-YYYY" id="start" label="Check In" required min-date="[[today]]" max-date="[[checkmax]]" on-keydown="keypress"
               required auto-validate error-message="Enter check in"></paper-input-date-picker>
-
-            <!--<vaadin-date-picker class="suggestions" id="start" label="Check In" required min="[[today]]" max="[[checkmax]]" on-keydown="keypress"
-              required auto-validate error-message="Enter check in">
-            </vaadin-date-picker>-->
           </div>
 
           <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">
              <paper-input-date-picker class="suggestions" id="end" label="Check Out" required date-format="MM-DD-YYYY" on-keydown="keypress" max-date="[[checkmax]]" required
               auto-validate error-message="Enter check out">
              </paper-input-date-picker>
-            <!--<vaadin-date-picker  class="suggestions" id="end" label="Check Out" required on-keydown="keypress" max="[[checkmax]]" min="[[today]]" required
-              auto-validate error-message="Enter check out">
-            </vaadin-date-picker>-->
           </div>
 
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
@@ -453,7 +446,7 @@ The form handles below mentioned scenarios on its own.
         window.setTimeout(function () {
           end.value = start.value;
           var checkOutDate = start.value;
-          checkOutDate.setDate(checkOutDate.getDate() + 1);
+          checkOutDate.setDate(checkOutDate.getDate());
           end.minDate = checkOutDate;
         
            CurrentDate = start.value;
