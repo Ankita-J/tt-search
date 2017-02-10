@@ -7,12 +7,18 @@
 <link rel="import" href="../paper-styles/shadow.html">
 <link rel="import" href="../paper-styles/typography.html">
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
+<link rel="import" href="../iron-a11y-announcer/iron-a11y-announcer.html">
 <link rel="import" href="../moment-element/moment-import.html">
 <link rel="import" href="paper-date-picker-icons.html">
 
 <dom-module id="paper-calendar">
   <template>
     <style>
+    .selectedRange{
+        border-bottom: 1px solid green;
+        border-top: 1px solid green;
+      }
       :host {
         display: inline;
         box-sizing: border-box;
@@ -56,7 +62,7 @@
       }
       #months.animating {
         transition-property: transform, opacity;
-        transition-duration: 300ms;
+        transition-duration: 0.0001ms;
       }
       #months.animating.swipe {
         transition-timing-function: var(--ease-in-sine);
@@ -71,7 +77,7 @@
         @apply(--layout-vertical);
         @apply(--layout-justified);
         @apply(--layout-flex);
-        border-left:1px solid lightgray;
+        border-left: solid 1px lightgray;        
       }
 
       .month-row, .month-nav {
@@ -100,7 +106,7 @@
       .month-nav .col {
         position: relative;
         @apply(--layout-vertical);
-        @apply(--layout-center-center);
+        @apply(--layout-center-center);        
       }
       .month-nav .btn .icon {
         cursor: pointer;
@@ -188,7 +194,7 @@
       }
     </style>
     <div id="calendar">
-      <div dialog-confirm id="months" on-track="_onTrack" class$="{{_contentClass}}">
+      <div  id="months" on-track="_onTrack" class$="{{_contentClass}}">
         <template is="dom-repeat" items="{{_months}}" as="month">
           <div class$="{{_getMonthClass('month', month)}}">
             <div class="month-row month-name">
@@ -202,7 +208,7 @@
               </template>
             </div>
             <template is="dom-repeat" items="{{month.weeks}}" as="row">
-              <div class="month-row month-days">
+              <div dialog-confirm class="month-row month-days">
                 <template is="dom-repeat" items="{{row}}">
                   <div class="month-col">
                     <div class$="{{_getDayClass('day-item selection', item.date, today, date)}}"
@@ -320,7 +326,8 @@
       ],
       listeners: {
         'iron-resize': '_resizeHandler',
-        'swiped': '_onSwipe'
+        'swiped': '_onSwipe',
+        'keydown': '_onKeypress'
       },
       ready: function() {
         this._updateToday();
@@ -424,21 +431,20 @@
           this._positionSlider();
         });
       },
-     
-      _getDayClass: function(cssClass, date) {
+     _getDayClass: function(cssClass, date) {
         if (date) {
           if (dateDiff(date, this.today) === 0) {
             cssClass += ' today';
           }
+          
            if (dateDiff(date, this.date) === 0) {
-            // if (dateDiff(date, this.date) <=6) {
             cssClass += ' selected';
             this.async(function() {
               this._updateSelection();
             });
           }
-          var seldate = 6;
-           var enddate;// =  document.getElementById("end").value;
+         
+           var enddate;
           var startdate=document.getElementById("start").value;
           
           if(startdate===undefined)
@@ -449,42 +455,54 @@
           startdate.setHours(0,0,0,0);
            if( document.getElementById("end").value === undefined)
            {              
-             enddate=startdate;
-             
+             enddate=startdate;             
            }
            else{
-            enddate=this.date;  //document.getElementById("end").value;
+            enddate=this.date; 
             enddate.setHours(0,0,0,0);
            }
-          
-          
-          
-          // for(var i=1; i <= seldate; i++){
-            //  if (dateDiff(this.date,enddate) <=seldate) {
-              if(date>=startdate && date<=enddate){
-                console.log("matchdate:"+ date);
-                  console.log("start : " + startdate);
-           console.log("end : " + enddate);
-             cssClass += ' selected';
+        
+          date.setHours(0,0,0,0);
+           if(date.getTime()===startdate.getTime())
+           {
+              cssClass += ' selected';
+           }
+            if(date>=startdate && date<=enddate){          
+             cssClass += ' selectedRange';
              this.async(function() {
                this._updateSelection();
              });
           }
-            // for(var i=1; i <= seldate; i++){
-            //  if(dateDiff(date,startdate)===i){
-            //   cssClass += ' selected';
-            //        this.async(function() {
-            //      this._updateSelection();
-            //    });
-            // }
-            //  }
-        //  else{
-        //    cssClass = cssClass.replace(' selected','');
-        //      this.async(function() {
-        //        this._updateSelection();
-        //      });
-
-        //  }
+                  
+                     //add 6 days    
+          var datepick=document.getElementById("start").value;
+          var datepickend=document.getElementById("end").value;
+            if(datepickend === datepick)
+           {      
+          
+          if(datepick===undefined)
+           {
+           
+           }
+          else 
+          {
+              var newdate = new Date(datepick);
+              newdate.setDate(newdate.getDate() + 6); 
+              var nd = new Date(newdate);
+              datepick.setHours(0,0,0,0);
+               nd.setHours(0,0,0,0);
+         if(date.getTime()===nd.getTime())
+         {    
+              cssClass += ' selected';
+           }
+              if(date>=datepick && date<=nd){
+              cssClass += ' selectedRange';
+              this.async(function() {
+                this._updateSelection();
+              });
+           }
+          }
+          }
         }
         return cssClass;
       },
@@ -655,6 +673,8 @@
           this._nextMonth();
         }
       },
+
+
       _once: function(eventName, callback, node) {
         node = node || this;
         function onceCallback() {
@@ -662,7 +682,8 @@
           callback.apply(null, arguments);
         }
         node.addEventListener(eventName, onceCallback);
-      },
+      },               
+
       _incrMonth: function(i) {
         var date = new Date(this.currentYear, this.currentMonth - 1 + i);
         var year = date.getFullYear();
@@ -678,6 +699,7 @@
       _nextMonth: function() {
         this._incrMonth(1);
       },
+
       _dateChanged: function(date, oldValue) {
         if (!this._isValidDate(date)) {
           console.warn('Invalid date: ' + date);
@@ -780,3 +802,4 @@
    })();
   </script>
 </dom-module>
+
