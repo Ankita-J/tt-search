@@ -15,7 +15,7 @@ var AutoComplete = (function () {
                     select: function (input, item) {
                         attr(input, { "data-autocomplete-old-value": input.value = attr(item, "data-autocomplete-value", item.innerHTML) });
                         component.selectedValue = attr(item, "data-autocomplete-value", item.innerHTML);
-                        component.selectedItem = component.response[attr(item, "data-index")];
+                        component.selectedItem = component.response[attr(item)];
                         component.fire('autosuggest-select', component.selectedItem);
                         // component.fire('autosuggest-select',component.clearTimeout(50));
                         component.fire('tab-next');
