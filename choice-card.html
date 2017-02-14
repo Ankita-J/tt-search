@@ -56,8 +56,8 @@ The form handles below mentioned scenarios on its own.
             <template is='dom-repeat' items='{{ rooms }}'>
                 <div class="head">
                     <paper-item >          
-                        <div id="line"><span>Room# {{displayIndex(index)}}</span></div>  
-                        <paper-button toggles class=button on-click="deleteRoom"><img src="trash.png" height="20px" width= "20px"></paper-button>                 
+                        <div id="line"><span>Room# {{displayIndex(index)}}</span></div>                          
+                        <paper-button toggles hidden="[[_isDeleteHidden]]" class=button on-click="deleteRoom"><img src="trash.png" height="20px" width= "20px"></paper-button>                                         
                     </paper-item>
                 </div>
                 <choice-form room="{{displayIndex(index)}}">{{ item.room }}</choice-form>
@@ -65,19 +65,22 @@ The form handles below mentioned scenarios on its own.
      </form>
     </div>
     <div class="buttons">
-      <paper-button toggles on-click='addRoom'>ADD ROOM</paper-button>
-      <paper-button toggles on-click='doneRoom'>DONE</paper-button>
+      <paper-button toggles on-click='addRoom'>Add Room</paper-button>
+      <paper-button toggles on-click='doneRoom'>Done</paper-button>
     </div>
 </paper-material>
 
 </template>
 <script>
+(function () {
+            var idArray = [], childAge = [], totalData = [], roomIdArray = [], roomChildIdArray = [], roomCount;
+            var inputAdultCount, inputChildCount;
 
     Polymer({
         is: 'choice-card',
         properties: {
              /**
-        * Fired when the trigger from drop down list 'need more rooms or have children is clicked.
+        * Fired when the option from drop down list 'need more rooms or have children is clicked.
         *
         * @event 'need more rooms or have children'
         */ 
@@ -89,10 +92,13 @@ The form handles below mentioned scenarios on its own.
          * rooms form is displayed when user click on need more rooms or have children.
          **/
             rooms: {
-                type: Array,
+                type: Array,                
                 notify: true
             }, 
-        
+             _isDeleteHidden: {
+                 type: Boolean,
+                 computed: '_lte(rooms.length , 1)'
+            },
            /**
            *This property is set for total count of rooms.
            **/
@@ -100,15 +106,32 @@ The form handles below mentioned scenarios on its own.
           roomCount: {
                 type: Number,
                 value: 0
+            },
+
+            totalData: {
+                type: Array,
+                notify: true
             }
         },
-        
+
+        _lte(a, b) {
+            return a <= b;
+        },
+
         /**
         * Defines the array for rooms 
         **/
         
         ready: function () {
-            this.rooms = [];           
+            this.rooms = [];  
+            this.idArray = [];         
+            this.childAge = [];
+            this.totalData = [];
+            this.roomIdArray = [];
+            this.roomChildIdArray =[];
+            this.roomCount;
+            this.inputChildCount;
+            this.inputAdultCount;
         },
         
         /**
@@ -117,8 +140,9 @@ The form handles below mentioned scenarios on its own.
         **/
         addRoom: function () {
             this.push('rooms', { room: "" });  
-            
+            this.push('totalData', { total: ""});
             this.roomCount = this.roomCount + 1;          
+            //this._idCal();
         },
 
         /**
@@ -136,9 +160,78 @@ The form handles below mentioned scenarios on its own.
         **/
         
         deleteRoom: function (e) {
-            this.splice('rooms', e.model.index, 1);           
+            this.splice('rooms', e.model.index, 1);   
+            var item = this.get(['totalData', e.model.index])
+            var index = this.totalData.indexOf(item);
+                if (index != -1) {
+                    totalData.splice(index);                     
+                }
+            
+            
+            this.idArray = new Array();
+            if(idArray.length === 0){
+                this._idCal();
+            }
+            this._idDelCal(e.model.index);
+            idArray.splice(e.model.index, 1);
+               console.log(idArray);
+
             this.roomCount = this.roomCount - 1;
         },      
+         _idDelCal: function (delIndex) {
+                inputChildCount = document.getElementsByClassName("inputChildCount");
+                    roomChildIdArray = [];
+                    roomIdArray = [];
+                    roomCount = this.roomCount;
+                    for(var i = delIndex + 1; i < roomCount; i++){
+                    var countId = +2 + +inputChildCount[i].value
+                    if(document.getElementById('adult' + i) != null){
+                    roomIdArray[0] = document.getElementById('adult' + i).id = 'adult' + (i-1);
+                    roomIdArray[1] = document.getElementById('child' + i).id = 'child' + (i-1);
+                    roomChildIdArray = new Array();
+                    for(var j = 0; j < inputChildCount[i].value; j++){
+                            if(document.getElementById("child"+(i+1)+"_"+(j+1)) != null){
+                                roomChildIdArray[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).id = 'child'+(i)+'_'+(j+1);
+                            }
+                    }
+                    roomIdArray[2] = roomChildIdArray;
+                    roomChildIdArray  = new Array();
+                       
+                }
+                   
+                 idArray[i] = JSON.stringify(roomIdArray);
+                 roomIdArray = new Array(); 
+              }
+            //    idArray.splice(delIndex);
+            //   console.log(idArray);
+
+        },
+        _idCal: function () {
+                inputChildCount = document.getElementsByClassName("inputChildCount");
+                    roomChildIdArray = [];
+                    roomIdArray = [];
+                    roomCount = this.roomCount;
+                    for(var i = 0; i < roomCount; i++){
+                    var countId = +2 + +inputChildCount[i].value
+                    if(document.getElementById('adult') != null){
+                    roomIdArray[0] = document.getElementById('adult').id = 'adult' + i;
+                    roomIdArray[1] = document.getElementById('child').id = 'child' + i;
+                    roomChildIdArray = new Array();
+                    for(var j = 0; j < inputChildCount[i].value; j++){
+                            if(document.getElementById("child"+(i+1)+"_"+(j+1)) != null){
+                                roomChildIdArray[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).id;
+                            }
+                    }
+                    roomIdArray[2] = roomChildIdArray;
+                    roomChildIdArray  = new Array();
+                    }
+                   
+                 idArray[i] = JSON.stringify(roomIdArray);
+                 roomIdArray = new Array();
+              }
+              console.log(idArray);
+
+        },
         
         /**
         *Function works for done button .
@@ -148,52 +241,25 @@ The form handles below mentioned scenarios on its own.
         **/
         
         doneRoom: function () {
-            var inputAdultCount = document.getElementsByClassName("inputAdultCount");
-            var inputChildCount = document.getElementsByClassName("inputChildCount");
+            inputAdultCount = document.getElementsByClassName("inputAdultCount");
+            inputChildCount = document.getElementsByClassName("inputChildCount");
             var dataAdult = [];
             var dataChild = [];
-            var dataRoom = [];
-            var totalData = [];
+            var dataRoom = [];            
             var roomData = [];
             var adultCount = 0;
-            var childCount = 0;
-            var childAge = [];         
-            var roomCount = this.roomCount;
-
-            var idArray = [];
-            var roomIdArray = [];
-            var roomChildIdArray = [];
-                /*
-                To collect the id's of adult child and childage dropdown as dynamic
-                */            
-             for(var i = 0; i < roomCount; i++){
-                    var countId = +2 + +inputChildCount
-                    roomIdArray[0] = document.getElementById('adult').id = 'adult' + i;
-                    roomIdArray[1] = document.getElementById('child').id = 'child' + i;
-                    roomChildIdArray = [];
-                    for(var j = 0; j < inputChildCount[i].value; j++){
-                        roomChildIdArray[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).id;
-                    }
-                    roomIdArray[2] = roomChildIdArray;
-                    // document.getElementById('adult').id = 'adult'+i;
-                    // document.getElementById('child').id = 'child'+i;
-                 idArray[i] = JSON.stringify(roomIdArray);
-              }
-              console.log(idArray);
-
+            var childCount = 0;            
+            roomCount = this.roomCount;
+           
             for (var i = 0; i < roomCount; i++)
             { 
-            // loop through each adult input on the page
-            
+            // loop through each adult input on the page          
                 dataAdult[i] = inputAdultCount[i].value;
-                if (dataAdult[i] === "1") {
-                  //  alert('hi');
-                 document.getElementsByClassName("inputAdultCount").invalid = true;
-                 }
                 adultCount = +adultCount + +dataAdult[i];
             }
             var inputAdult = JSON.stringify(adultCount);
-            
+
+
             for (var i = 0; i < roomCount; i++)
             { 
             // loop through each child input on the page
@@ -208,29 +274,35 @@ The form handles below mentioned scenarios on its own.
                      count = +2 + +inputChildCount[i].value;                                  
                      dataRoom[0] = inputAdultCount[i].value;
                      dataRoom[1] = inputChildCount[i].value;
-                     childAge = [];
+                     childAge = new Array();
                     
                      for(var j = 0; j < inputChildCount[i].value; j++){                        
+                        if(document.getElementById("child"+(i+1)+"_"+(j+1)) != null){
                         childAge[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).selectedItem.textContent.trim();
+                        }
                      }                     
                      dataRoom[2] = childAge;             
                  
                  totalData[i] = JSON.stringify(dataRoom);
             }
             alert(totalData);
-            console.log(totalData);                       
+            console.log(totalData); 
+            if(idArray.length === 0){
+            this._idCal();           
+            }           
              if(roomCount === 1)
              {
                  var output = inputAdult  + '  Adults' + ' ,  ' +  inputChild + '  Children  in ' + roomCount + ' room';
              }
-             else{
+             else
+             {
                  var output = inputAdult  + '  Adults' + ' ,  ' +  inputChild + '  Children  in ' + roomCount + ' rooms';           
              } 
              /*
              to change the textcontent of dropodown list from 'need more rooms or have children to 'x adult, y children in z rooms'.          
              */
             var need = this.parentElement.parentElement;            
-            console.log(need);
+            //console.log(need);
             var room = need.parentNode.parentNode.querySelector("#needRoom");
             room.textContent = output;
             need.parentNode.parentNode.querySelector("#listbox").selected = 1;
@@ -244,5 +316,6 @@ The form handles below mentioned scenarios on its own.
                 }
             }
     });
+})()
 </script>
 </dom-module>
