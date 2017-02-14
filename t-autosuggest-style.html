@@ -9,6 +9,7 @@
             outline: none;
             height:500px;
             
+            
         }
         
         :host * {
@@ -25,7 +26,8 @@
             transition-duration: 0.3s;
             transition-property: all;
             transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
-            margin-top: 10px;
+           margin-top: 10px;
+            
         }
         
         paper-material.paper-material-0 {
@@ -46,7 +48,7 @@
         
         :host::content .autocomplete ul {
             padding: 0;
-            border: 2px solid lightgray;
+       border: 2px solid lightgray;
             margin: 0;
             padding-bottom: 40px;   
         }
@@ -56,7 +58,7 @@
         :host::content .autocomplete ul li:focus,
         :host::content .autocomplete ul li:hover {
             background-color: #EEEEEE;
-            
+           
             transition: all 0.5s ease 0s;
         }
         
@@ -126,7 +128,7 @@
     overflow: hidden;
   } */
         
-        @media (max-width: 350px) {
+        @media (max-width: 300px) {
             :host.focused {
                 position: fixed;
                 top: 0;
