@@ -76,16 +76,18 @@ The form handles below mentioned scenarios on its own.
         height: 100px;
       }  
       paper-input{
-        --paper-input-container-focus-color: lightgray;
+        --paper-input-container-focus-color: green;
          --paper-input-container-color: lightgray;
           --paper-input-container-input-color: white;
+          --paper-input-container-label-focus:lightgray;
           font-size: small;
           
       }   
       paper-dropdown-menu {
        --paper-input-container-color:lightgray;
-       --paper-input-container-focus-color:lightgray;
+       --paper-input-container-focus-color:green;
        --paper-input-container-input-color:lightgray;
+        --paper-input-container-label-focus:lightgray;
        --paper-menu-button-dropdown: {
             position: absolute !important;
             top: 50px !important;
@@ -108,6 +110,23 @@ The form handles below mentioned scenarios on its own.
         margin-left: 10px;        
         font-size: small;
       }
+       @media (max-width: 380px) {
+          .row-xs-height {
+            display: table;
+            table-layout: fixed;
+            height: 100%;
+            width: 100%;            
+          }
+          paper-card{
+          position: absolute !important;
+          top: 200px !important;
+          
+          width:100%;
+          border:1px solid lightgray;
+          background-color:white;
+          }
+         
+      }
        @media (min-width: 380px) {
           .row-xs-height {
             display: table;
@@ -117,12 +136,15 @@ The form handles below mentioned scenarios on its own.
           }
           paper-card{
           position: absolute !important;
-          top: 190px !important;
-          right: 18px !important;
-          width:455px;
+          top: 200px !important;
+         
+          width:100%;
           border:1px solid lightgray;
           background-color:white;
           }
+           .dialogPosition{
+        width:200px;
+      }
       }
       @media (min-width: 768px) {
         .row-sm-height {
@@ -138,7 +160,7 @@ The form handles below mentioned scenarios on its own.
               position: absolute !important;
           top: 140px !important;
           right: 18px !important;
-          width:455px;
+          width:420px;
           border:2px solid lightgray;
           background-color:white;
           }
@@ -166,6 +188,9 @@ The form handles below mentioned scenarios on its own.
         height: 100px;
         width: 100%;
       }
+      .dialogPosition{
+        width:100px;
+      }
       paper-card{
         position: absolute !important;
         top: 80px !important;
@@ -185,7 +210,13 @@ The form handles below mentioned scenarios on its own.
           --secondary-text-color: lightgray;
           --light-primary-color: #4cb050;
           --primary-background-color: white;                         
-      }    
+      } 
+      #start{
+         width:100%;
+      }
+      #end{
+        width:100%;
+      }   
       
     </style>
 
@@ -201,17 +232,17 @@ The form handles below mentioned scenarios on its own.
  <div class="container-fluid">
     <div class="row">
      
-    <app-toolbar class="row-lg-height row-md-height row-sm-height row-xs-height">
+    <app-toolbar  class="row-lg-height row-md-height row-sm-height row-xs-height">
 
       <form is="iron-form" id="form" method="post" action="/form/handler">
         
            
-          <div required auto-validate class="col-lg-4 col-md-4 col-sm-12 col-xs-12" id="deskinput" style="height:60px">
+          <div  required auto-validate class="col-lg-4 col-md-4 col-sm-12 col-xs-12" id="deskinput" style="height:60px">
             <template is="dom-bind">
               <t-mystique-auth name="mystique" url="http://demo.travelnxt.com/api/authentication/authenticate/context" token-response="{{tokenResponse}}"
                 auto>
               </t-mystique-auth>
-              <t-autosuggest required auto-validate  id="location" name="location"
+              <t-autosuggest  required auto-validate  id="location" name="location"
                 required selected-item="{{location}}" query-params="token={{tokenResponse.authenticationToken}}"  label="Enter city, airport, address or point of interest"
                 token-param="formattedAddress" data-url="http://demo.travelnxt.com/api/content/autosuggest/"></t-autosuggest>
               
@@ -219,14 +250,21 @@ The form handles below mentioned scenarios on its own.
           </div>
 
           <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">
-            <paper-input-date-picker class="suggestions" date-format="MM-DD-YYYY" id="start" label="Check In" required min-date="[[today]]" max-date="[[checkmax]]" on-keydown="keypress"
-              required auto-validate error-message="Enter check in"></paper-input-date-picker>
+            <paper-input-date-picker error-message="Enter check in"  class="suggestions" date-format="MM-DD-YYYY" id="start" label="Check In" required min-date="[[today]]" max-date="[[checkmax]]" on-keydown="keypress">
+
+            </paper-input-date-picker>
+
+            <!--<vaadin-date-picker class="suggestions" id="start" label="Check In" required min="[[today]]" max="[[checkmax]]" on-keydown="keypress"
+              required auto-validate error-message="Enter check in">
+            </vaadin-date-picker>-->
           </div>
 
           <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">
-             <paper-input-date-picker class="suggestions" id="end" label="Check Out" required date-format="MM-DD-YYYY" on-keydown="keypress" max-date="[[checkmax]]" required
-              auto-validate error-message="Enter check out">
+             <paper-input-date-picker  error-message="Enter check out" class="suggestions" id="end" label="Check Out" date-format="MM-DD-YYYY" required  on-keydown="keypress" max-date="[[checkmax]]">
              </paper-input-date-picker>
+            <!--<vaadin-date-picker  class="suggestions" id="end" label="Check Out" required on-keydown="keypress" max="[[checkmax]]" min="[[today]]" required
+              auto-validate error-message="Enter check out">
+            </vaadin-date-picker>-->
           </div>
 
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
@@ -452,6 +490,7 @@ The form handles below mentioned scenarios on its own.
            CurrentDate = start.value;
           //  CurrentDate.setDate(CurrentDate.getDate() + x);
            end.initialPosition = CurrentDate;
+           end.left=end.left-100;
           end._showDialog();
         }, 500);
       });
