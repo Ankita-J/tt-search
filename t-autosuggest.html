@@ -1,6 +1,18 @@
 
 <script src='autocomplete.js'></script>
+<!--
+<link rel="import" href="../polymer/polymer.html">-->
+<!--<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/paper-material/paper-material.html">
+<link rel="import" href="bower_components/iron-input/iron-input.html">
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/iron-dropdown/iron-dropdown-scroll-manager.html">-->
+
 <link rel="import" href="paper-s/paper-spinner.html">
+<!--<link rel="import" href="bower_components/paper-input/paper-input-error.html">-->
+<!--<link rel="import" href="paper-input-container.html">-->
+
 <link rel="import" href="t-autosuggest-style.html">
 
 <!--
@@ -11,6 +23,7 @@
 .unhide{display:block;}
 #line{
     border-bottom: 1px silver solid;
+    /*height:10px;        */
     margin: 3px 0 10px 0;
 }
 #line span{
@@ -39,7 +52,7 @@ padding:10px;
             }
   
             paper-input-container{
-        --paper-input-container-focus-color: lightgray;
+        --paper-input-container-focus-color: #4cb050;
          --paper-input-container-color: lightgray;
           --paper-input-container-input-color: white;
           
@@ -94,7 +107,7 @@ padding:10px;
                                  
                 </div>
                 
-                    <div style="border: 1px solid lightgray" id="dropBox" class="autocomplete flex"></div>
+                    <div id="dropBox" class="autocomplete flex"></div>
                     
                  </div>
                  
@@ -220,11 +233,11 @@ Polymer({
         // /**
         //  * Disable autosuggest.
         //  */
-        // // disabled: {
-        // //     type: Boolean,
-        // //     value: false,
-        // //     reflectToAttribute: true
-        // // },
+         disabled: {
+             type: Boolean,
+             value: false,
+             reflectToAttribute: true
+         },
 
         /**
          * Disable autosuggest.
@@ -238,29 +251,29 @@ Polymer({
         /**
          * Label of the autosuggest.
          */
-        // label: {
-        //     type: String,
-        //     value: "",
-        //     reflectToAttribute: true,
-        //     // observer: '_checkLabel'
-        // },
+         label: {
+             type: String,
+             value: "",
+             reflectToAttribute: true,
+             // observer: '_checkLabel'
+         },
 
         /**
          * Put as required
          */
-        // required: {
-        //     type: Boolean,
-        //     value: false,
-        //     reflectToAttribute: true
-        // },
+         required: {
+             type: Boolean,
+            value: false,
+             reflectToAttribute: true
+         },
 
         /**
          * Set to true to fire validations on blur
          */
-        // validateOnBlur: {
-        //     type: Boolean,
-        //     value: true
-        // },
+         validateOnBlur: {
+             type: Boolean,
+             value: true
+         },
 
         /**
          * Token param
@@ -397,6 +410,7 @@ checkdata:{
     _clear:function(event){
         event.stopPropagation();
         this.clear();
+         document.getElementById("clearContainer").setAttribute('class', 'hide');
     },
 
     _onFocus: function(event) {
@@ -426,9 +440,9 @@ checkdata:{
 
     _selectedItemChanged: function () {
         if (this.selectedItem != undefined) { 
-            this.selectedValue = this.selectedItem[this.tokenParam];
+            this.selectedValue = this.selectedItem;
             this._focusingOut();
-            this.validate();
+           
             
         }
     },
