@@ -7,26 +7,31 @@
 <link rel="import" href="../paper-styles/shadow.html">
 <link rel="import" href="../paper-styles/typography.html">
 <link rel="import" href="../iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
-<link rel="import" href="../iron-a11y-announcer/iron-a11y-announcer.html">
 <link rel="import" href="../moment-element/moment-import.html">
 <link rel="import" href="paper-date-picker-icons.html">
 
 <dom-module id="paper-calendar">
   <template>
     <style>
-    .selectedRange{
-        border-bottom: 1px solid green;
-        border-top: 1px solid green;
-      }
+     .selectedRange{
+        border: 1px solid green;
+        color: green;
+        }
+        .selectToday{
+          border: 1px solid gray;
+          background-color: white;
+          -webkit-text-fill-color: green;
+                  }
+
       :host {
         display: inline;
         box-sizing: border-box;
-        padding: 12px 0;      
+        padding: 12px 0;
+        
         position: relative;
         width: 100%;
         height: 100%;
-        min-width: 160px;
+        min-width: 360px;
         min-height: 160px;
         color: var(--primary-text-color);
         -webkit-font-smoothing: antialiased;
@@ -61,12 +66,12 @@
       }
       #months.animating {
         transition-property: transform, opacity;
-        transition-duration: 0.0001ms;
+        transition-duration: 0.000000001ms;
       }
-      #months.animating.swipe {
+      /*#months.animating.swipe {
         transition-timing-function: var(--ease-in-sine);
         --webkit-transition-timing-function: var(--ease-in-sine);
-      }
+      }*/
       #months.animating.reset {
         transition-timing-function: var(--ease-out-sine);
         --webkit-transition-timing-function: var(--ease-out-sine);
@@ -76,7 +81,7 @@
         @apply(--layout-vertical);
         @apply(--layout-justified);
         @apply(--layout-flex);
-        border-left: solid 1px lightgray;        
+        border-left:1px solid lightgray;
       }
 
       .month-row, .month-nav {
@@ -97,7 +102,7 @@
         position: absolute;
         top: 0;
         left: 0;
-        width: 490px;
+        width: 40px;
         opacity: 1;
         @apply(--layout-horizontal);
         @apply(--layout-center);
@@ -105,7 +110,7 @@
       .month-nav .col {
         position: relative;
         @apply(--layout-vertical);
-        @apply(--layout-center-center);        
+        @apply(--layout-center-center);
       }
       .month-nav .btn .icon {
         cursor: pointer;
@@ -191,9 +196,121 @@
       .flex-5 {
         @apply(--layout-flex-5);
       }
+
+
+
+      
+          @media (min-width: 300px) {
+        :host {
+        display: block;
+        box-sizing: border-box;
+        padding: 12px 0;
+        
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-width: 340px;
+        min-height: 160px;
+        color: var(--primary-text-color);
+        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        --ease-in-sine: cubic-bezier(0.47, 0, 0.745, 0.715);
+        --ease-out-sine: cubic-bezier(0.39, 0.575, 0.565, 1);
+        @apply(--paper-font-body1);
+        @apply(--paper-calendar);
+        overflow: hidden;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        @apply(--paper-calendar);
+        
+      }
+       .month-nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 200px;
+        min-width:250px;
+        opacity: 1;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+       .month-row, .month-nav {
+        width:200px;
+        min-width:200px;
+        height: calc(100%/8);
+        box-sizing: border-box;
+        padding: 0 calc(100%/36);
+      }
+
+      .month-col {
+        position: relative;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      }
+       @media (min-width: 768px) {
+          :host {
+        display: inline;
+        box-sizing: border-box;
+        padding: 12px 0;
+        
+        position: relative;
+        width: 100%;
+        height: 100%;
+        min-width: 300px;
+        min-height: 160px;
+        color: var(--primary-text-color);
+        -webkit-font-smoothing: antialiased;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        --ease-in-sine: cubic-bezier(0.47, 0, 0.745, 0.715);
+        --ease-out-sine: cubic-bezier(0.39, 0.575, 0.565, 1);
+        @apply(--paper-font-body1);
+        @apply(--paper-calendar);
+        overflow: hidden;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        @apply(--paper-calendar);
+        
+      }
+       .month-nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 350px;
+        opacity: 1;
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+       .month-row, .month-nav {
+        width:250px;
+        
+        height: calc(100%/8);
+        box-sizing: border-box;
+        padding: 0 calc(100%/36);
+      }
+
+      .month-col {
+        position: relative;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+      }
+      #monthNav{
+        width:500px;
+      }
+      }
     </style>
     <div id="calendar">
-      <div  id="months" on-track="_onTrack" class$="{{_contentClass}}">
+      <div id="months" on-track="_onTrack" class$="{{_contentClass}}">
         <template is="dom-repeat" items="{{_months}}" as="month">
           <div class$="{{_getMonthClass('month', month)}}">
             <div class="month-row month-name">
@@ -207,9 +324,9 @@
               </template>
             </div>
             <template is="dom-repeat" items="{{month.weeks}}" as="row">
-              <div dialog-confirm class="month-row month-days">
+              <div class="month-row month-days">
                 <template is="dom-repeat" items="{{row}}">
-                  <div class="month-col">
+                  <div dialog-confirm class="month-col">
                     <div class$="{{_getDayClass('day-item selection', item.date, today, date)}}"
                       disabled$="{{_isDisabled(item.day, item.date, minDate, maxDate)}}"
                       on-tap="_tapDay" date$="{{item.name}}">
@@ -325,8 +442,7 @@
       ],
       listeners: {
         'iron-resize': '_resizeHandler',
-        'swiped': '_onSwipe',
-        'keydown': '_onKeypress'
+        'swiped': '_onSwipe'
       },
       ready: function() {
         this._updateToday();
@@ -430,11 +546,12 @@
           this._positionSlider();
         });
       },
-     _getDayClass: function(cssClass, date) {
+     
+      _getDayClass: function(cssClass, date) {
         if (date) {
-          if (dateDiff(date, this.today) === 0) {
-            cssClass += ' today';
-          }
+          // if (dateDiff(date, this.today) === 0) {
+          //   cssClass += ' today';
+          // }
           
            if (dateDiff(date, this.date) === 0) {
             cssClass += ' selected';
@@ -445,11 +562,10 @@
          
            var enddate;
           var startdate=document.getElementById("start").value;
-          
-          if(startdate===undefined)
+           
+                   if(startdate===undefined)
           {
             startdate=this.today;
-
           }
           startdate.setHours(0,0,0,0);
            if( document.getElementById("end").value === undefined)
@@ -460,9 +576,14 @@
             enddate=this.date; 
             enddate.setHours(0,0,0,0);
            }
+            date.setHours(0,0,0,0);
+           if(date.getTime()===this.today.getTime())
+           {
+              cssClass += ' selectToday';
+           }
         
           date.setHours(0,0,0,0);
-           if(date.getTime()===startdate.getTime())
+           if(date.getTime()===startdate.getTime()  && this.today.getTime()!=startdate.getTime())
            {
               cssClass += ' selected';
            }
@@ -472,9 +593,10 @@
                this._updateSelection();
              });
           }
-                  
+           
+                    
                      //add 6 days    
-           var datepick=document.getElementById("start").value;
+          var datepick=document.getElementById("start").value;
           var datepickend=document.getElementById("end").value;  
           if(datepickend===enddate){
           if(datepick===undefined)
@@ -500,7 +622,7 @@
            }
           }
           }
-        }
+          }
         return cssClass;
       },
       _isDisabled: function(day, date) {
@@ -666,12 +788,11 @@
       _onSwipe: function(event) {
         if (event.detail.direction === 'right') {
           this._prevMonth();
-        } else {
+        }
+         else {
           this._nextMonth();
         }
       },
-
-
       _once: function(eventName, callback, node) {
         node = node || this;
         function onceCallback() {
@@ -679,8 +800,7 @@
           callback.apply(null, arguments);
         }
         node.addEventListener(eventName, onceCallback);
-      },               
-
+      },
       _incrMonth: function(i) {
         var date = new Date(this.currentYear, this.currentMonth - 1 + i);
         var year = date.getFullYear();
@@ -696,7 +816,6 @@
       _nextMonth: function() {
         this._incrMonth(1);
       },
-
       _dateChanged: function(date, oldValue) {
         if (!this._isValidDate(date)) {
           console.warn('Invalid date: ' + date);
@@ -799,4 +918,3 @@
    })();
   </script>
 </dom-module>
-
