@@ -88,7 +88,7 @@ The form handles below mentioned scenarios on its own.
        
          <template is='dom-repeat' items='{{ children }}'>                    
            <div class="childs1">        
-                    <paper-dropdown-menu required auto-validate error-message="Enter age" label="child{{childIndex(index)}}" id="child{{childID(index)}}">
+                  <paper-dropdown-menu class="ageOfChild" required auto-validate error-message="Enter age" label="child{{childIndex(index)}}" id="child{{childID(index)}}">
                        <paper-listbox class="dropdown-content">                             
                             <paper-item>0</paper-item>
                             <paper-item>1</paper-item>
@@ -103,8 +103,9 @@ The form handles below mentioned scenarios on its own.
                             <paper-item>10</paper-item>
                             <paper-item>11</paper-item>                            
                         </paper-listbox>            
-                    </paper-dropdown-menu>
-                 <div id="size" >Age</div>  
+                    </paper-dropdown-menu>                    
+                 <div id="size" >Age</div>
+                 
            </div>
          </template>
      </form>      
@@ -138,14 +139,17 @@ The form handles below mentioned scenarios on its own.
             *this property is set to adult drop down for selected item.
             **/              
           countAdult: {
-              type: Number,           
+              type: Number, 
+              value: 0          
           },
            /**
             *this property is set to child drop down for selected item.
             **/
           countChildren: {
               type: Number,                    
+              value: 0
           },
+          
            /**
             * child age drop down for toggle purpose.
             **/
@@ -178,7 +182,7 @@ The form handles below mentioned scenarios on its own.
        **/
 
         displayId : function (a){            
-           console.log(this);
+           //console.log(this);
            return a;
         },
        
@@ -200,8 +204,7 @@ The form handles below mentioned scenarios on its own.
          cCount = this.countChildren;
          for(var i = 0; i < cCount; i++){
              this.push('children', { child: "" });            
-          }
-          var age = this.parentElement.parentElement;
+          }       
         }  
     });
     </script>
