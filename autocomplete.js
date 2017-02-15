@@ -82,6 +82,9 @@ var AutoComplete = (function () {
                                             li.innerHTML = response;
                                             attr(li, { "data-autocomplete-value": response });
                                             attr(li, { "data-index": index });
+                                            if(index === 0){                                                
+                                                li.style.background = 'lightgray';
+                                            }
                                             ul.appendChild(li);
                                             return createLi();
                                         },
