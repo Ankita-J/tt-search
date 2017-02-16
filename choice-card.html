@@ -44,9 +44,17 @@ The form handles below mentioned scenarios on its own.
         .head
         {
             float:left;
-            width:490px;
+            width:450px;
             margin-top: 20px;
         }
+         @media (max-width: 600px) {
+              .head
+        {
+            float:left;
+            width:100%;
+            margin-top: 20px;
+        }
+         }
       
       </style>
 
@@ -132,8 +140,8 @@ The form handles below mentioned scenarios on its own.
             this.roomCount;
             this.inputChildCount;
             this.inputAdultCount;
-            this.push('rooms', { room: "" });  
-            this.roomCount = this.roomCount + 1;
+            this.push('rooms', { room: "" });
+             this.roomCount = this.roomCount + 1;
         },
         
         /**
@@ -269,7 +277,7 @@ The form handles below mentioned scenarios on its own.
                 childCount = +childCount + +dataChild[i];
             }
             var inputChild = JSON.stringify(childCount);
-
+            var validdata=true;
             for (var i = 0; i < roomCount; i++)
             {
             // loop through each child input on the page  
@@ -277,18 +285,24 @@ The form handles below mentioned scenarios on its own.
                      dataRoom[0] = inputAdultCount[i].value;
                      dataRoom[1] = inputChildCount[i].value;
                      childAge = new Array();
-                    
+                    // if(dataRoom[1]!="0"){
                      for(var j = 0; j < inputChildCount[i].value; j++){                        
-                        if(document.getElementById("child"+(i+1)+"_"+(j+1)) != null){
-                        childAge[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).selectedItem.textContent.trim();
+                        // if(document.getElementById("child"+(i+1)+"_"+(j+1)) != null){
+                        childAge[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).value;
+                        if( childAge[j]==undefined){
+                            validdata=false;
+                            document.getElementById("child"+(i+1)+"_"+(j+1)).invalid=true;
+                            document.getElementById("size1"+(i+1)+"_"+(j+1)).style.visibility = "hidden";
                         }
-                     }                     
+                    }    
+                                   
                      dataRoom[2] = childAge;             
                  
                  totalData[i] = JSON.stringify(dataRoom);
             }
-            alert(totalData);
-            console.log(totalData); 
+            if(validdata){
+             alert(totalData);
+            // console.log(totalData); 
             if(idArray.length === 0){
             this._idCal();           
             }           
@@ -317,6 +331,8 @@ The form handles below mentioned scenarios on its own.
                     need.style.visibility = 'hidden';                    
                 }
             }
+            
+        }
     });
 })()
 </script>
