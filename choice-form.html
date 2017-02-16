@@ -51,9 +51,35 @@ The form handles below mentioned scenarios on its own.
       width:445px;
       margin-left: 5px;      
   }
+  
   #size{
       font-size: 10px;
   }
+   @media (max-width: 600px) {
+        .container{
+      width:100%;
+      margin-left: 5px;      
+  }
+   #Adult
+  {
+       width:40%;
+       float:left;
+       float:clear;
+  }
+  .childs{
+        width:40%;
+        float:left;
+        margin-left:18px;
+        float:clear;
+   }
+    .childs1{
+        width:25%;
+        float:left;
+        margin-left:18px;
+        float:clear;
+   }
+   
+   }
   </style>
        <div class="container">
         <form is="iron-form" id="form" method="post" action="/form/handler">
@@ -104,7 +130,7 @@ The form handles below mentioned scenarios on its own.
                             <paper-item>11</paper-item>                            
                         </paper-listbox>            
                     </paper-dropdown-menu>                    
-                 <div id="size" >Age</div>
+                 <div style="font-size: 10px" id="size1{{childID(index)}}" >Age</div>
                  
            </div>
          </template>
