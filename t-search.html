@@ -6,6 +6,7 @@
 <link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="bower_components\paper-input-date-picker-master\paper-input-date-picker.html">
 <link rel="stylesheet" href="bower_components\bootstrap\dist\css\bootstrap.min.css">
+<script src="bower_components\jquery\dist\jquery.min.js"></script>
 <script src="bower_components\bootstrap\dist\js\bootstrap.min.js"></script>
 
 <link rel="import" href="choice-card.html">
@@ -16,6 +17,18 @@ This component is a form that fires an event with search request object on succe
 
 There are two  properties that are required to run this form which initialize the location autosuggest. These are
 `data-url`, `query-params`.
+
+This component triggers the event `t-search` with an object containing values of all input fields in event details.
+Object created with the `t-search`:
+
+    {
+        location: this.location,
+        checkIn: this.checkIn,
+        checkOut: this.checkOut,
+        adultCount: this.adultCount,
+        childCount: this.childCount,
+        childAges: this.childAges
+    }
 
 To preselect some value in the form pass the value of the property while initiating t-search.
 
@@ -52,11 +65,11 @@ The form handles below mentioned scenarios on its own.
        padding :0px;
        margin : 0px;
       }
-      :root {
+      /*:root {
        --vaadin-date-picker-overlay : {
           max-height: 250px;
        };
-      }
+      }*/
       app-toolbar{
         background-color: var(--outer-container-color);
         display: block;
@@ -137,7 +150,7 @@ The form handles below mentioned scenarios on its own.
         .row-sm-height {
           display: table;
           table-layout: fixed;
-          height: 200px;
+          height: 170px;
           width: 100%;
         }
         paper-container{
@@ -162,7 +175,7 @@ The form handles below mentioned scenarios on its own.
       paper-card{
         position: absolute !important;
         top: 80px !important;
-        right: 18px !important;
+        right: 10px !important;
         width:455px;
         border:2px solid lightgray;
         background-color:white;
@@ -181,8 +194,8 @@ The form handles below mentioned scenarios on its own.
       paper-card{
         position: absolute !important;
         top: 80px !important;
-        right: 18px !important;
-        width:455px;
+        right: 10px !important;
+        width:430px;
         border:2px solid lightgray;
         background-color:white;
         }
@@ -198,12 +211,12 @@ The form handles below mentioned scenarios on its own.
           --light-primary-color: #4cb050;
           --primary-background-color: white;                         
       } 
-      #start{
+     /* #start{
          width:100%;
       }
       #end{
         width:100%;
-      }   
+      }   */
       
     </style>
 
@@ -237,7 +250,7 @@ The form handles below mentioned scenarios on its own.
           </div>
 
           <div class="col-lg-2 col-md-2 col-sm-3 col-xs-6">
-            <paper-input-date-picker error-message="Enter check in"  class="suggestions" date-format="MM-DD-YYYY" id="start" label="Check In" required min-date="[[today]]" max-date="[[checkmax]]" on-keydown="keypress">
+            <paper-input-date-picker  error-message="Enter check in"  class="suggestions"  date-format="MM-DD-YYYY" id="start" label="Check In" required min-date="[[today]]" max-date="[[checkmax]]" on-keydown="keypress">
 
             </paper-input-date-picker>
 
@@ -449,8 +462,8 @@ The form handles below mentioned scenarios on its own.
           this.$.deskinput1.invalid = true;
         }
         else {
-          var myJSON = JSON.stringify(data);
-          alert(myJSON);     // will alert the value of the input
+         var myJSON= JSON.stringify(data);
+          alert(myJSON);    // will alert the value of the input
           console.log(myJSON);
           return false;      // stop form from posting
         }
@@ -463,21 +476,17 @@ The form handles below mentioned scenarios on its own.
 
       var start = document.querySelector('#start');
       var end = document.querySelector('#end');
-      var x = 6;
       var CurrentDate;
       start.addEventListener('value-changed', function () {
         // Open the end date picker with a delay to
         // make it less confusing.
         window.setTimeout(function () {
           end.value = start.value;
-          var checkOutDate = start.value;
-          checkOutDate.setDate(checkOutDate.getDate());
-          end.minDate = checkOutDate;
-        
-           CurrentDate = start.value;
+         
+          
+          start.minDate = start.value;
           //  CurrentDate.setDate(CurrentDate.getDate() + x);
-           end.initialPosition = CurrentDate;
-           end.left=end.left-100;
+           
           end._showDialog();
         }, 500);
       });
