@@ -67,32 +67,51 @@ Example:
       paper-button.btn-clear:hover {
         background: var(--paper-red-50);
       }
-      #dialog{
+      /*#dialog{
         width:512px;
         height:268px;
-        position:fixed;
         margin-top: -1px;
         margin-left: -5px;
-      }
+      }*/
        @media (min-width: 300px) {
-         #dialog{
-       width:200px;
-        min-width:200px;
-        height:268px;
-        position:fixed;
-        margin-top: -1px;
-        margin-left: -25px;
-      }    
+        paper-dialog { 
+    position: fixed;
+     width:412px;
+      /*height:268px;*/
+    top: 140px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0;
+    margin: 0;        
+}
               }
        @media (min-width: 768px) {
-         #dialog{
-        width:512px;
-        height:268px;
-        position:fixed;
-        margin-top: -1px;
-        margin-left: -5px;
-      }
+         paper-dialog { 
+    position: absolute;
+     width:512px;
+      height:268px;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0;
+    margin: 0;        
+}
        }
+         @media (min-width: 1024px) {
+         paper-dialog { 
+    position: absolute;
+     width:512px;
+      height:268px;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0;
+    margin: 0;  
+         }      
+}
 
       
       
@@ -143,7 +162,7 @@ Example:
       </paper-input>
     </paper-button>
     <paper-dialog  id="dialog" class="paper-date-picker-dialog dialogPosition" modal="[[modal]]" on-iron-overlay-closed="_dismissDialog">
-      <paper-date-picker  style="width:550px"  id="picker" locale="[[locale]]" min-date="[[_computeMinDate(minDate)]]" max-date="[[_computeMaxDate(maxDate)]]"></paper-date-picker>
+      <paper-date-picker  style="width:550px"  id="picker"  locale="[[locale]]" min-date="[[_computeMinDate(minDate)]]" max-date="[[_computeMaxDate(maxDate)]]"></paper-date-picker>
       <!--<div class="buttons">
         <paper-button dialog-dismiss on-tap="_onTapClearValue" class="btn-clear">Clear</paper-button>
         <paper-button dialog-dismiss>Cancel</paper-button>
@@ -176,6 +195,8 @@ Example:
       modal: {
         type: Boolean
       },
+    
+      
       
       /**
         * The label for the dropdown.
@@ -260,7 +281,7 @@ Example:
         
       inputDisplayFormat: {
         type: String,
-        value: 'LL',
+        value: 'L',
         notify: true
       }
     },
