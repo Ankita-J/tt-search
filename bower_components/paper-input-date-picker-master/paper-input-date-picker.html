@@ -1,15 +1,12 @@
 <link rel="import" href="../polymer/polymer.html">
-
 <link rel="import" href="../iron-a11y-keys-behavior/iron-a11y-keys-behavior.html">
 <link rel="import" href="../iron-behaviors/iron-button-state.html">
 <link rel="import" href="../iron-behaviors/iron-control-state.html">
-
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-date-picker/paper-date-picker.html">
-
 <link rel="import" href="../paper-input-date-picker-master/moment-with-locales-import.html">
 <!--
 An element providing a solution to no problem in particular.
@@ -33,13 +30,11 @@ Example:
        paper-input{
         --paper-input-container-focus-color: #4cb050;
         --paper-input-container-underline-focus-color:green;
-      --paper-input-container-label:lightgray;
-         --paper-input-container-color: lightgray;
-          --paper-input-container-input-color: white;
-          font-size: small;
-         
-      }        
-      
+        --paper-input-container-label:lightgray;
+        --paper-input-container-color: lightgray;
+        --paper-input-container-input-color: white;
+          font-size: small;         
+      }              
       
       :host > paper-button {
         padding: 0px;
@@ -67,54 +62,45 @@ Example:
       paper-button.btn-clear:hover {
         background: var(--paper-red-50);
       }
-      /*#dialog{
-        width:512px;
-        height:268px;
-        margin-top: -1px;
-        margin-left: -5px;
-      }*/
        @media (min-width: 300px) {
         paper-dialog { 
-    position: fixed;
-     width:412px;
-      /*height:268px;*/
-    top: 140px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0;
-    margin: 0;        
-}
-              }
+         position: fixed;
+         width:412px;      
+         top: 140px;
+         left: 0;
+         right: 0;
+         bottom: 0;
+         padding: 0;
+         margin: 0;        
+        }
+      }
        @media (min-width: 768px) {
          paper-dialog { 
-    position: absolute;
-     width:512px;
-      height:268px;
-    top: 60px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0;
-    margin: 0;        
-}
+            position: absolute;
+            width:512px;
+            height:268px;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 0;
+            margin: 0;        
+        }
        }
-         @media (min-width: 1024px) {
-         paper-dialog { 
-    position: absolute;
-     width:512px;
-      height:268px;
-    top: 60px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    padding: 0;
-    margin: 0;  
-         }      
-}
-
-      
-      
+      @media (min-width: 1024px) {
+        paper-dialog { 
+            position: absolute;
+            width:512px;
+            height:268px;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 0;
+            margin: 0;  
+        }      
+      }
+          
     </style>
     
     <paper-button  on-tap="_showDialog"
@@ -123,13 +109,11 @@ Example:
       <paper-input id="input"
         disabled="[[disabled]]"
         value="[[_computeInputText(value)]]"
-        invalid="{{invalid}}"
-        prevent-invalid-input="[[preventInvalidInput]]"
+        invalid="{{invalid}}"       
         allowed-pattern="[[allowedPattern]]"
         validator="[[validator]]"
         type="[[type]]"
         pattern="[[pattern]]"
-        required="[[required]]"
         autocomplete="[[autocomplete]]"
         autofocus="[[autofocus]]"
         inputmode="[[inputmode]]"
@@ -153,24 +137,15 @@ Example:
         label="[[label]]"
         on-blur="_onInputBlur"
         on-keydown="_onInputKeyDown"
-        on-keyup="_onInputKeyUp"
-        
+        on-keyup="_onInputKeyUp"        
         tabindex="-1"
-        readonly>
-        <!--<iron-icon icon="[[prefixIcon]]" hidden="[[noPrefixIcon]]" prefix></iron-icon>
-        <iron-icon icon="arrow-drop-down" suffix></iron-icon>-->
+        readonly>        
       </paper-input>
     </paper-button>
     <paper-dialog  id="dialog" class="paper-date-picker-dialog dialogPosition" modal="[[modal]]" on-iron-overlay-closed="_dismissDialog">
       <paper-date-picker  style="width:550px"  id="picker"  locale="[[locale]]" min-date="[[_computeMinDate(minDate)]]" max-date="[[_computeMaxDate(maxDate)]]"></paper-date-picker>
-      <!--<div class="buttons">
-        <paper-button dialog-dismiss on-tap="_onTapClearValue" class="btn-clear">Clear</paper-button>
-        <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button dialog-confirm>OK</paper-button>
-      </div>-->
     </paper-dialog>
   </template>
-
 </dom-module>
 
 <script>
@@ -188,15 +163,12 @@ Example:
     },
 
     properties: {
-
       /**
         * Turns the datepicker in a modal dialog .
         */
       modal: {
         type: Boolean
-      },
-    
-      
+      },     
       
       /**
         * The label for the dropdown.
@@ -212,20 +184,18 @@ Example:
         type: String
       },
 
-      noPrefixIcon: {
-        
+      noPrefixIcon: {        
         type: Boolean,
         value: false,
         reflectToAttribute: true
       },
+        
        disabled: {
         type: Boolean,
         value: false
-      },
-    
+      },    
 
-      prefixIcon: {
-        
+      prefixIcon: {        
         type: String,
         value: 'today',
         reflectToAttribute: true
@@ -298,7 +268,6 @@ Example:
       if (minDate) {
         return minDate;
       }
-
       return null;
     },
 
@@ -306,7 +275,6 @@ Example:
       if (maxDate) {
         return maxDate;
       }
-
       return null;
     },
 
@@ -387,8 +355,7 @@ Example:
     _showDialog: function() {
       this.$picker.date = (this.value) ? this.value : new Date();
       this.$.dialog.toggle();
-    },
-    
+    },   
 
   });
 
