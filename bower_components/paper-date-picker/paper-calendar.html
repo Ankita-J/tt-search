@@ -913,8 +913,9 @@
             return false;
           }
           var item = event.model.item;
+          event.model.item.year = event.model.item.date.getFullYear();
           var newDate = new Date(this.date.getTime());
-          newDate.setYear(item.year);
+          newDate.setYear(event.model.item.year);
           newDate.setMonth(item.month);
           newDate.setDate(item.day);
           this.date = newDate;
