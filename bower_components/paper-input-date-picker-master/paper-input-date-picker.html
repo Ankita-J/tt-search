@@ -352,10 +352,19 @@ Example:
       this.focus();
     },
     
-    _showDialog: function() {
+    _showDialog: function () {
+      var startDate=document.getElementById("start");
+      if(this.id=='end' && startDate.value!=undefined){
+
       this.$picker.date = (this.value) ? this.value : new Date();
       this.$.dialog.toggle();
-    },   
+      }
+      else if(this.id == 'start'){
+ this.$picker.date = (this.value) ? this.value : new Date();
+      this.$.dialog.toggle();
+
+      }
+    },
 
   });
 
