@@ -24,7 +24,7 @@
         border-top-left-radius: 100%;
         border-bottom-left-radius: 100%;
         margin-left: 0px;
-         margin-right: -1px;
+         margin-right: 0px;
           border-top:1px solid #4cb050;
          border-bottom:1px solid #4cb050;
       }
@@ -33,7 +33,7 @@
         border-right: 1px solid #4cb050;
         border-top-right-radius: 100%;
         border-bottom-right-radius: 100%;
-         margin-right: 0px;
+         margin-right: 1px;
          border-top:1px solid #4cb050;
          border-bottom:1px solid #4cb050;
       }
@@ -50,6 +50,7 @@
         margin-left: 0px;
         margin-right: -1px;
          background-image: url('../Green circle.svg');
+          background-repeat: no-repeat;
          /*background-color: #4cb050;*/
          /*border-radius: 100%;*/
       }
@@ -61,7 +62,7 @@
          background-repeat: no-repeat;
          background-position: 4px 0;
          /*background-size: 100%;*/
-         margin-right: 0px;
+         margin-right: 2px;
          -webkit-text-fill-color: white;
       }
       
@@ -678,13 +679,13 @@
               if ((this._checkDayName(date) === "Sunday" || date.getTime() === this._checkFirstDayofMonth(date).getTime()) && date.getTime()!=enddate.getTime()) {
                 cssClass += ' selectedRangeSun';
               }
-              else if (this._checkDayName(date) === "Saturday" || date.getTime() === this._checkLastDayofMonth(date).getTime()) {
+              else if ((this._checkDayName(date) === "Saturday" || date.getTime() === this._checkLastDayofMonth(date).getTime()) && date.getTime()!=enddate.getTime()) {
                 cssClass += ' selectedRangeSat';
               }
-               if ((this._checkDayName(date) === "Saturday" && date.getTime() === this._checkFirstDayofMonth(date).getTime()) && date.getTime()!=enddate.getTime()) {
+                if ((this._checkDayName(date) === "Saturday" && date.getTime() === this._checkFirstDayofMonth(date).getTime()) && date.getTime()!=enddate.getTime()) {
                 cssClass += ' selectedRangeSat';
               }
-              if (this._checkDayName(date) === "Sunday" && date.getTime() === this._checkLastDayofMonth(date).getTime()) {
+              if ((this._checkDayName(date) === "Sunday" && date.getTime() === this._checkLastDayofMonth(date).getTime()) && date.getTime()!=enddate.getTime()) {
                 cssClass += ' selectedRangeSat';
               }
               this.async(function () {
