@@ -651,7 +651,7 @@
               cssClass += ' selected';
             }
             if (date >= startdate && date <= enddate) {
-              if(this._checkDayName(date) != "Sunday"){
+              if(this._checkDayName(date) != "Sunday" && date.getTime() != this._checkFirstDayofMonth(date).getTime()){
               cssClass += ' selectedRange';
               this.async(function () {
                 this._updateSelection();
@@ -679,6 +679,9 @@
                 cssClass += ' selectedRangeSun';
               }
               else if (this._checkDayName(date) === "Saturday" || date.getTime() === this._checkLastDayofMonth(date).getTime()) {
+                cssClass += ' selectedRangeSat';
+              }
+               if ((this._checkDayName(date) === "Saturday" && date.getTime() === this._checkFirstDayofMonth(date).getTime()) && date.getTime()!=enddate.getTime()) {
                 cssClass += ' selectedRangeSat';
               }
               if (this._checkDayName(date) === "Sunday" && date.getTime() === this._checkLastDayofMonth(date).getTime()) {
@@ -725,6 +728,9 @@
                     cssClass += ' selectedRangeSun';
                   }
                   else if (this._checkDayName(date) === "Saturday" || date.getTime() === this._checkLastDayofMonth(date).getTime()) {
+                    cssClass += ' selectedRangeSat';
+                  }
+                   if ((this._checkDayName(date) === "Saturday"  && date.getTime() === this._checkFirstDayofMonth(date).getTime())  && date.getTime()!=nd.getTime()) {
                     cssClass += ' selectedRangeSat';
                   }
                    if (this._checkDayName(date) === "Sunday" && date.getTime() === this._checkLastDayofMonth(date).getTime()) {
