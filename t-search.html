@@ -461,7 +461,7 @@ The form handles below mentioned scenarios on its own.
         // Open the end date picker with a delay to
         // make it less confusing.
         window.setTimeout(function () {
-          end.value = start.value;
+         
          
           
            start.minDate = new Date();
@@ -469,6 +469,7 @@ The form handles below mentioned scenarios on its own.
           CurrentDate.setHours(0, 0, 0, 0);
            CurrentDate.setDate(CurrentDate.getDate() +1);
             end.minDate=CurrentDate;
+             end.value=CurrentDate;
           //  CurrentDate.setDate(CurrentDate.getDate() + x);
            
           end._showDialog();
