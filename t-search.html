@@ -18,18 +18,6 @@ This component is a form that fires an event with search request object on succe
 There are two  properties that are required to run this form which initialize the location autosuggest. These are
 `data-url`, `query-params`.
 
-This component triggers the event `t-search` with an object containing values of all input fields in event details.
-Object created with the `t-search`:
-
-    {
-        location: this.location,
-        checkIn: this.checkIn,
-        checkOut: this.checkOut,
-        adultCount: this.adultCount,
-        childCount: this.childCount,
-        childAges: this.childAges
-    }
-
 To preselect some value in the form pass the value of the property while initiating t-search.
 
 Example:
