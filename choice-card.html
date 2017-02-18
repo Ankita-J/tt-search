@@ -223,24 +223,35 @@ The form handles below mentioned scenarios on its own.
                     roomCount = this.roomCount;
                     for(var i = 0; i < roomCount; i++){
                     var countId = +2 + +inputChildCount[i].value
-                    if(document.getElementById('adult') != null){
-                    roomIdArray[0] = document.getElementById('adult').id = 'adult' + i;
-                    roomIdArray[1] = document.getElementById('child').id = 'child' + i;
-                    roomChildIdArray = new Array();
-                    for(var j = 0; j < inputChildCount[i].value; j++){
-                            if(document.getElementById("child"+(i+1)+"_"+(j+1)) != null){
-                                roomChildIdArray[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).id;
-                            }
-                    }
-                    roomIdArray[2] = roomChildIdArray;
-                    roomChildIdArray  = new Array();
-                    }
+                     if(document.getElementById('adult' + (i)) == null){
+                        roomIdArray[0] = document.getElementById('adult').id = 'adult' + i;
+                        roomIdArray[1] = document.getElementById('child').id = 'child' + i;
+                        roomChildIdArray = new Array();
+                        for(var j = 0; j < inputChildCount[i].value; j++){
+                                if(document.getElementById("child"+(i+1)+"_"+(j+1)) != null){
+                                    roomChildIdArray[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).id;
+                                }
+                        }
+                        roomIdArray[2] = roomChildIdArray;
+                        roomChildIdArray  = new Array();
+                      }
+                      else {
+                         roomIdArray[0] = document.getElementById('adult'+(i)).id ;
+                         roomIdArray[1] = document.getElementById('child'+(i)).id;
+                         roomChildIdArray = new Array();
+                         for(var j = 0; j < inputChildCount[i].value; j++){
+                                if(document.getElementById("child"+(i+1)+"_"+(j+1)) != null){
+                                    roomChildIdArray[j] = document.getElementById("child"+(i+1)+"_"+(j+1)).id;
+                                }
+                          }
+                         roomIdArray[2] = roomChildIdArray;
+                         roomChildIdArray  = new Array();
+                      }
                    
                  idArray[i] = JSON.stringify(roomIdArray);
                  roomIdArray = new Array();
               }
               console.log(idArray);
-
         },
         
         /**
