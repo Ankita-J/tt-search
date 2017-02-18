@@ -464,7 +464,11 @@ The form handles below mentioned scenarios on its own.
           end.value = start.value;
          
           
-          start.minDate = start.value;
+           start.minDate = new Date();
+          CurrentDate=start.value;
+          CurrentDate.setHours(0, 0, 0, 0);
+           CurrentDate.setDate(CurrentDate.getDate() +1);
+            end.minDate=CurrentDate;
           //  CurrentDate.setDate(CurrentDate.getDate() + x);
            
           end._showDialog();
