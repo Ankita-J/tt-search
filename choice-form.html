@@ -98,7 +98,7 @@ The form handles below mentioned scenarios on its own.
         </div>
 
         <div class="childs">
-        <paper-dropdown-menu  label="children" id="child" on-iron-select='onCount' class="inputChildCount" required auto-validate error-message="Enter Child Count">
+        <paper-dropdown-menu  label="Children" id="child" on-iron-select='onCount' class="inputChildCount" required auto-validate error-message="Enter Child Count">
             <paper-listbox  class="dropdown-content" selected="{{countChildren}}">
                 <paper-item>0</paper-item>
                 <paper-item>1</paper-item>
@@ -114,7 +114,7 @@ The form handles below mentioned scenarios on its own.
        
          <template is='dom-repeat' items='{{ children }}'>                    
            <div class="childs1">        
-                  <paper-dropdown-menu class="ageOfChild" required auto-validate error-message="Enter age" label="child{{childIndex(index)}}" id="child{{childID(index)}}">
+                  <paper-dropdown-menu class="ageOfChild" required auto-validate error-message="Enter age" label="Child {{childIndex(index)}}" id="child{{childID(index)}}">
                        <paper-listbox class="dropdown-content">                             
                             <paper-item>&lt; 1 Year</paper-item>
                             <paper-item>1</paper-item>
