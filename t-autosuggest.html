@@ -1,37 +1,22 @@
 
 <script src='autocomplete.js'></script>
-<!--
-<link rel="import" href="../polymer/polymer.html">-->
-<!--<link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/paper-material/paper-material.html">
-<link rel="import" href="bower_components/iron-input/iron-input.html">
-<link rel="import" href="bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="bower_components/iron-dropdown/iron-dropdown-scroll-manager.html">-->
-
 <link rel="import" href="paper-s/paper-spinner.html">
-<!--<link rel="import" href="bower_components/paper-input/paper-input-error.html">-->
-<!--<link rel="import" href="paper-input-container.html">-->
-
 <link rel="import" href="t-autosuggest-style.html">
-
 <!--
    
 -->
 <style>
     .hide {display : none;}
-.unhide{display:block;}
-#line{
-    border-bottom: 1px silver solid;
-    /*height:10px;        */
-    margin: 3px 0 10px 0;
-}
-#line span{
-background-color:white;
-padding:4px;
-
-
-}
+     .unhide{display:block;}
+      #line{
+         border-bottom: 1px silver solid;
+         /*height:10px;        */
+         margin: 3px 0 10px 0;
+      }
+      #line span{
+         background-color:white;
+         padding:4px;
+      }
 </style>
 <dom-module id="t-autosuggest">
     <template>
@@ -39,9 +24,7 @@ padding:4px;
     	*,
     	::content *{
             -webkit-text-size-adjust: none;
-        }
-    
-
+        } 
     </style>
 
     <style>
@@ -58,10 +41,8 @@ padding:4px;
           
           font-size: small;
           
-      }
-           
-           </style>
-        
+      }          
+      </style>      
     
     <style include="iron-flex"></style>
    
@@ -74,45 +55,32 @@ padding:4px;
                 <div class="flex label-container">
                     
                     <label style="color:lightgray" hidden$="[[!label]]">[[label]]</label>
-                    <!--<paper-material class="flex">-->
-                    
-                   
+                    <!--<paper-material class="flex">-->                                     
                          <input style="width:93%" class="suggestions" 
                         id="autoSuggest" 
                         is="iron-input" 
-                        disabled$="[[disabled]]"
-                        
+                        disabled$="[[disabled]]"                        
                         data-autocomplete$="{{dataUrl}}"
                         data-autocomplete-dealy$="{{debounce}}"
-                        data-autocomplete-method="GET" 
-                       
+                        data-autocomplete-method="GET"                        
                         data-autocomplete-type="JSON" 
                         data-autocomplete-limit="10" 
                         data-autocomplete-param-name$="{{param}}" 
-                        data-autocomplete-no-result$="{{emptyMessage}}" 
-                      
+                        data-autocomplete-no-result$="{{emptyMessage}}"                       
                         on-mouseUp="_onFocus" 
                         bind-value$="[[selectedValue]]"  
                         on-search="_onClear"
-                        on-tap="_focusOnInput"
-                    
+                        on-tap="_focusOnInput" 
+                        onresize ="_changeWidth"
                         autocapitalize="on" autocorrect="off" autocomplete="additional-name" >
-                </div> 
-                   
-                                     
-                  </div>
-          
+                </div>                  
+             </div>        
             
-          <div id="append" class="flex"> 
-                                 
+          <div id="append" class="flex">                                  
                 </div>
-                
-                    <div id="dropBox" class="autocomplete flex"></div>
-                    
-                 </div>
-                 
-        
-                      <!--<template is="dom-if" if="[[errorMessage]]">
+          <div id="dropBox" class="autocomplete flex"></div>
+       </div>                    
+                     <!--<template is="dom-if" if="[[errorMessage]]">
                         <paper-input-error  class="error empty-error">[[errorMessage]]</paper-input-error>
                       </template>-->
                      
@@ -123,8 +91,7 @@ padding:4px;
         
         <div  id="clearContainer"  is="iron-input"
                         disabled$="[[disabled]]"                        
-                        data-autocomplete$="{{dataUrl}}" 
-                        
+                        data-autocomplete$="{{dataUrl}}"                         
                         data-autocomplete-method="GET" 
                         data-autocomplete-type="JSON" 
                         data-autocomplete-limit="10" 
@@ -133,29 +100,23 @@ padding:4px;
                         on-mouseUp="_onFocus" 
                         bind-value$="[[selectedValue]]"  
                         on-search="_onClear"
-                        on-tap="_focusOnInput"
-                        
+                        on-tap="_focusOnInput"                        
                         autocapitalize="on" autocorrect="off" autocomplete="additional-name" >
                          <iron-icon id="clearButton" icon="close" ></iron-icon>                        
-                      
-                       </div>
+          </div>
                        
                        <div id="spinner" class="horizontal layout flex center-justified" hidden style="float:right;
                        margin-top: -34px;">
                    <paper-spinner active ></paper-spinner>
-        </div>                   
-                       
+        </div>                                        
 </div>
 
     </template>
 </dom-module>
 <script>
 Polymer({
-
     is: 't-autosuggest',
-
     properties: {
-
         /**
          * Name property
          */
@@ -163,9 +124,7 @@ Polymer({
             type: String,
             value: '',
             reflectToAttribute: true
-        },
-        
-     
+        },           
         /**
          * No label float is to make the label either on the body or on the top.
          */
@@ -175,17 +134,14 @@ Polymer({
             value: true,
            // observer: '_checkLabel'
         },
-
         /**
          * Api url of the autosuggestion engine.
          */
         dataUrl: {
             type: String,
             value: '',
-            reflectToAttribute: true,
-            
-        },
-   
+            reflectToAttribute: true,            
+        },  
         
         /**
          * Search parameter.
@@ -195,7 +151,6 @@ Polymer({
             value: "query",
             reflectToAttribute: true
         },
-
         /**
          * No matching result message.
          */
@@ -205,7 +160,6 @@ Polymer({
             
         //     reflectToAttribute: true
         // },
-
         /**
          * Selected value from the autosuggest.
          */
@@ -216,7 +170,6 @@ Polymer({
             observer:'_checkFloatedLabel',
             reflectToAttribute: true
         },
-
         /**
          * Selected item from the autosuggest.
          */
@@ -229,7 +182,6 @@ Polymer({
                 return null;
             }
         },
-
         // /**
         //  * Disable autosuggest.
         //  */
@@ -238,7 +190,6 @@ Polymer({
              value: false,
              reflectToAttribute: true
          },
-
         /**
          * Disable autosuggest.
          */
@@ -247,7 +198,6 @@ Polymer({
         value: false,
       reflectToAttribute: true
         },
-
         /**
          * Label of the autosuggest.
          */
@@ -257,7 +207,6 @@ Polymer({
              reflectToAttribute: true,
              // observer: '_checkLabel'
          },
-
         /**
          * Put as required
          */
@@ -266,7 +215,6 @@ Polymer({
             value: false,
              reflectToAttribute: true
          },
-
         /**
          * Set to true to fire validations on blur
          */
@@ -274,7 +222,6 @@ Polymer({
              type: Boolean,
              value: true
          },
-
         /**
          * Token param
          */
@@ -283,7 +230,6 @@ Polymer({
             value: "",
             reflectToAttribute: true
         },
-
         /**
          * errorMessage is to put the error msg
          */
@@ -292,7 +238,6 @@ Polymer({
         //     reflectToAttribute: false,
         //     value: ''
         // },
-
         // invalid:{
         //     type:Boolean,
         //     value: false,
@@ -303,23 +248,19 @@ Polymer({
              type:String,
               value:'Enter city, airport, address or point of interest'
          },
-
         caching: {
             type: Boolean,
             reflectToAttribute: true,
             value: false
         },
-
         subType: {
             type: String,
             value: ""
         },
-
         queryParams: {
             type: String,
             value: ""
         },
-
         minimumCharacters: {
             type: Number,
             value: 3
@@ -328,7 +269,6 @@ Polymer({
             type:TimeRanges,
             value:'50'
         },
-
     },
     listeners:{
         'tap':'simpleTap',
@@ -362,20 +302,12 @@ checkdata:{
                 document.body.scrollTop = document.documentElement.scrollTop = 0;
             }
             setTimeout(allFunction, 10);
-
-        });
-        
+        });        
     },
-
     _focusOnInput: function(){
     	this.querySelector('#autoSuggest').blur();
-   			this.querySelector('#autoSuggest').focus();
-    	
-    },
-   
-     
-    
-
+   			this.querySelector('#autoSuggest').focus();    	
+    }, 
     _focusingOut: function(){
         var component = this,
         //to handle the scrolling position when focused
@@ -398,8 +330,7 @@ checkdata:{
             }
         }
         setTimeout(allFunction, 10);
-    },
- 
+    }, 
     _cancel:function(){
         // if(this.lastSelectedItem){
         //     this.selectedItem = this.lastSelectedItem;
@@ -412,66 +343,58 @@ checkdata:{
         this.clear();
          document.getElementById("clearContainer").setAttribute('class', 'hide');
     },
-
     _onFocus: function(event) {
         Polymer.IronDropdownScrollManager.pushScrollLock(this);
         this.$.autoSuggest.select();
         event.stopImmediatePropagation();
         return false;
     },
-
     // _checkLabel: function() {
     //     this.placeholder = this.noLabelFloat ? this.label : "";
-    // },
-    
-      
-
-   
-
+    // },         
     _closeLambda: function() {
         var item = this;
         this.$.dropBox.className = "autocomplete ";
     },
-
     _onClear: function(event){
         this.selectedValue = "";
         this.selectedItem = null;
     },
-
     _selectedItemChanged: function () {
         if (this.selectedItem != undefined) { 
             this.selectedValue = this.selectedItem;
-            this._focusingOut();
-           
-            
+            this._focusingOut();                      
         }
     },
-
     _checkFloatedLabel: function() {
         if (this.$.autoSuggest.value.length > 0) {
             this.classList.add('label-is-floating');
         } else {
             this.classList.remove('label-is-floating');
         }
+        this._showReadMoreDots();
     },
-
     simpleTap:function(e){
         if (!e) var e = window.event;
         e.cancelBubble = true;
-        if (e.stopPropagation) e.stopPropagation();
-        
+        if (e.stopPropagation) e.stopPropagation();        
     },
   
-    clear: function() {
-        
+    clear: function() {        
         this.classList.add('focused');     
         this.selectedValue = "";
         //this.selectedItem = null;
         this.$.autoSuggest.value = "";
         this.classList.remove('label-is-floating');
     }
-  
-   
-   
+  _showReadMoreDots: function () {
+            var l = this.$.autoSuggest.offsetWidth/7.6;
+            if(this.$.autoSuggest.value.length > l){
+                this.$.autoSuggest.value = this.$.autoSuggest.bindValue.substring(0,l) + "..."
+            }
+        },
+        _changeWidth: function() {
+        this._showReadMoreDots();
+        }    
 })
 </script>
